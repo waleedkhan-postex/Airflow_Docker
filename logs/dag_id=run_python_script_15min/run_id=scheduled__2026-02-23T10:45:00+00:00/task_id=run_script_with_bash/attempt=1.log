@@ -1,46 +1,0 @@
-[2026-02-23T11:00:01.203+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:45:00+00:00 [queued]>
-[2026-02-23T11:00:01.212+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:45:00+00:00 [queued]>
-[2026-02-23T11:00:01.212+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
-[2026-02-23T11:00:01.225+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-23 10:45:00+00:00
-[2026-02-23T11:00:01.232+0000] {standard_task_runner.py:60} INFO - Started process 145703 to run task
-[2026-02-23T11:00:01.236+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-23T10:45:00+00:00', '--job-id', '520', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmpwiwvjzly']
-[2026-02-23T11:00:01.240+0000] {standard_task_runner.py:88} INFO - Job 520: Subtask run_script_with_bash
-[2026-02-23T11:00:01.299+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:45:00+00:00 [running]> on host d47ca292ab05
-[2026-02-23T11:00:01.407+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-23T10:45:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-23T10:45:00+00:00'
-[2026-02-23T11:00:01.409+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-02-23T11:00:01.410+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
-[2026-02-23T11:00:01.422+0000] {subprocess.py:86} INFO - Output:
-[2026-02-23T11:00:05.515+0000] {subprocess.py:93} INFO - 
-[2026-02-23T11:00:05.515+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
-[2026-02-23T11:00:05.516+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
-[2026-02-23T11:00:06.523+0000] {subprocess.py:93} INFO - 2026-02-23 11:00:06,523 | INFO     | Running for 🔵 Blue Environment
-[2026-02-23T11:00:53.650+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/185 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:   4%|▍         | 7/185 [00:00<00:03, 55.78it/s]ClickHouse [ch-new.callcourier.com.pk]:  12%|█▏        | 23/185 [00:03<00:29,  5.49it/s]ClickHouse [ch-new.callcourier.com.pk]:  26%|██▋       | 49/185 [00:03<00:09, 14.65it/s]ClickHouse [ch-new.callcourier.com.pk]:  39%|███▉      | 73/185 [00:04<00:04, 25.64it/s]ClickHouse [ch-new.callcourier.com.pk]:  52%|█████▏    | 97/185 [00:04<00:02, 39.55it/s]ClickHouse [ch-new.callcourier.com.pk]:  52%|█████▏    | 97/185 [00:20<00:02, 39.55it/s]ClickHouse [ch-new.callcourier.com.pk]:  61%|██████    | 112/185 [00:24<00:26,  2.71it/s]ClickHouse [ch-new.callcourier.com.pk]:  61%|██████    | 113/185 [00:24<00:27,  2.66it/s]ClickHouse [ch-new.callcourier.com.pk]:  68%|██████▊   | 126/185 [00:37<00:32,  1.80it/s]ClickHouse [ch-new.callcourier.com.pk]:  72%|███████▏  | 133/185 [00:37<00:23,  2.21it/s]ClickHouse [ch-new.callcourier.com.pk]:  78%|███████▊  | 144/185 [00:37<00:13,  3.05it/s]ClickHouse [ch-new.callcourier.com.pk]:  83%|████████▎ | 153/185 [00:42<00:12,  2.62it/s]ClickHouse [ch-new.callcourier.com.pk]:  86%|████████▋ | 160/185 [00:42<00:07,  3.31it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 185/185 [00:43<00:00,  4.30it/s]
-[2026-02-23T11:00:55.472+0000] {subprocess.py:93} INFO - 2026-02-23 11:00:55,472 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
-[2026-02-23T11:00:55.473+0000] {subprocess.py:93} INFO - 2026-02-23 11:00:55,472 | INFO     | Running for 🟢 Green Environment
-[2026-02-23T11:01:21.960+0000] {local_task_job_runner.py:302} WARNING - State of this instance has been externally set to None. Terminating instance.
-[2026-02-23T11:01:21.964+0000] {process_utils.py:131} INFO - Sending 15 to group 145703. PIDs of all processes in the group: [145704, 145703]
-[2026-02-23T11:01:21.965+0000] {process_utils.py:86} INFO - Sending the signal 15 to group 145703
-[2026-02-23T11:01:21.965+0000] {taskinstance.py:2450} ERROR - Received SIGTERM. Terminating subprocesses.
-[2026-02-23T11:01:21.966+0000] {subprocess.py:104} INFO - Sending SIGTERM signal to process group
-[2026-02-23T11:01:21.980+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 203, in execute
-    result = self.subprocess_hook.run_command(
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/hooks/subprocess.py", line 91, in run_command
-    for raw_line in iter(self.sub_process.stdout.readline, b""):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 2452, in signal_handler
-    raise AirflowException("Task received SIGTERM signal")
-airflow.exceptions.AirflowException: Task received SIGTERM signal
-[2026-02-23T11:01:21.985+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260223T104500, start_date=20260223T110001, end_date=20260223T110121
-[2026-02-23T11:01:22.002+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 520 for task run_script_with_bash ((psycopg2.errors.ForeignKeyViolation) insert or update on table "task_fail" violates foreign key constraint "task_fail_ti_fkey"
-DETAIL:  Key (dag_id, task_id, run_id, map_index)=(run_python_script_15min, run_script_with_bash, scheduled__2026-02-23T10:45:00+00:00, -1) is not present in table "task_instance".
-
-[SQL: INSERT INTO task_fail (task_id, dag_id, run_id, map_index, start_date, end_date, duration) VALUES (%(task_id)s, %(dag_id)s, %(run_id)s, %(map_index)s, %(start_date)s, %(end_date)s, %(duration)s) RETURNING task_fail.id]
-[parameters: {'task_id': 'run_script_with_bash', 'dag_id': 'run_python_script_15min', 'run_id': 'scheduled__2026-02-23T10:45:00+00:00', 'map_index': -1, 'start_date': datetime.datetime(2026, 2, 23, 11, 0, 1, 203925, tzinfo=Timezone('UTC')), 'end_date': datetime.datetime(2026, 2, 23, 11, 1, 21, 984814, tzinfo=Timezone('UTC')), 'duration': 80}]
-(Background on this error at: https://sqlalche.me/e/14/gkpj); 145703)
-[2026-02-23T11:01:22.017+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=145704, status='terminated', started='11:00:00') (145704) terminated with exit code None
-[2026-02-23T11:01:22.018+0000] {process_utils.py:79} INFO - Process psutil.Process(pid=145703, status='terminated', exitcode=1, started='11:00:00') (145703) terminated with exit code 1

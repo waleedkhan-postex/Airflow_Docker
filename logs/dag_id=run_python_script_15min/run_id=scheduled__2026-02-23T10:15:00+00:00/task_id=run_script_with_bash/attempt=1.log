@@ -1,68 +1,0 @@
-[2026-02-23T10:30:00.614+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [queued]>
-[2026-02-23T10:30:00.623+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [queued]>
-[2026-02-23T10:30:00.623+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
-[2026-02-23T10:30:00.635+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-23 10:15:00+00:00
-[2026-02-23T10:30:00.641+0000] {standard_task_runner.py:60} INFO - Started process 144967 to run task
-[2026-02-23T10:30:00.646+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-23T10:15:00+00:00', '--job-id', '517', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmpd7o3l83h']
-[2026-02-23T10:30:00.650+0000] {standard_task_runner.py:88} INFO - Job 517: Subtask run_script_with_bash
-[2026-02-23T10:30:00.705+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [running]> on host d47ca292ab05
-[2026-02-23T10:30:00.799+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-23T10:15:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-23T10:15:00+00:00'
-[2026-02-23T10:30:00.800+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-02-23T10:30:00.801+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
-[2026-02-23T10:30:00.812+0000] {subprocess.py:86} INFO - Output:
-[2026-02-23T10:30:04.835+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:30:04.836+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
-[2026-02-23T10:30:04.836+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
-[2026-02-23T10:30:05.881+0000] {subprocess.py:93} INFO - 2026-02-23 10:30:05,880 | INFO     | Running for 🔵 Blue Environment
-[2026-02-23T10:30:26.513+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/185 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:  12%|█▏        | 22/185 [00:00<00:00, 198.80it/s]ClickHouse [ch-new.callcourier.com.pk]:  23%|██▎       | 42/185 [00:01<00:05, 27.08it/s] ClickHouse [ch-new.callcourier.com.pk]:  49%|████▉     | 91/185 [00:01<00:01, 72.33it/s]ClickHouse [ch-new.callcourier.com.pk]:  64%|██████▍   | 118/185 [00:09<00:07,  8.65it/s]ClickHouse [ch-new.callcourier.com.pk]:  73%|███████▎  | 135/185 [00:14<00:07,  6.31it/s]ClickHouse [ch-new.callcourier.com.pk]:  79%|███████▉  | 146/185 [00:16<00:06,  6.41it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 185/185 [00:16<00:00, 11.20it/s]
-[2026-02-23T10:30:27.726+0000] {subprocess.py:93} INFO - 2026-02-23 10:30:27,726 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
-[2026-02-23T10:30:27.727+0000] {subprocess.py:93} INFO - 2026-02-23 10:30:27,726 | INFO     | Running for 🟢 Green Environment
-[2026-02-23T10:31:02.951+0000] {subprocess.py:93} INFO - ClickHouse [ch-prod-green.callcourier.com.pk]:   0%|          | 0/185 [00:00<?, ?it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:   4%|▍         | 7/185 [00:00<00:02, 67.33it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  12%|█▏        | 23/185 [00:00<00:01, 93.31it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  35%|███▍      | 64/185 [00:00<00:00, 216.27it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  56%|█████▌    | 103/185 [00:01<00:00, 82.12it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  56%|█████▌    | 103/185 [00:18<00:00, 82.12it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  61%|██████    | 112/185 [00:24<00:27,  2.65it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  61%|██████    | 113/185 [00:25<00:28,  2.50it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  67%|██████▋   | 124/185 [00:29<00:22,  2.65it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  74%|███████▎  | 136/185 [00:29<00:13,  3.67it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  78%|███████▊  | 144/185 [00:29<00:08,  4.61it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  82%|████████▏ | 152/185 [00:31<00:06,  4.72it/s]ClickHouse [ch-prod-green.callcourier.com.pk]: 100%|██████████| 185/185 [00:31<00:00,  5.95it/s]
-[2026-02-23T10:31:04.184+0000] {subprocess.py:93} INFO - 2026-02-23 10:31:04,184 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__green_environment.csv
-[2026-02-23T10:31:04.184+0000] {subprocess.py:93} INFO - 2026-02-23 10:31:04,184 | INFO     | Running for 🟡 Yellow Environment
-[2026-02-23T10:31:42.514+0000] {subprocess.py:93} INFO - ClickHouse [ch-yellow.callcourier.com.pk]:   0%|          | 0/247 [00:00<?, ?it/s]ClickHouse [ch-yellow.callcourier.com.pk]:   3%|▎         | 8/247 [00:00<00:03, 67.55it/s]ClickHouse [ch-yellow.callcourier.com.pk]:   8%|▊         | 19/247 [00:00<00:02, 86.47it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  12%|█▏        | 30/247 [00:00<00:02, 83.00it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  16%|█▌        | 39/247 [00:00<00:06, 32.00it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  20%|██        | 50/247 [00:01<00:04, 43.62it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  40%|███▉      | 98/247 [00:01<00:01, 121.02it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  49%|████▉     | 122/247 [00:02<00:03, 33.40it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  55%|█████▌    | 137/247 [00:13<00:20,  5.35it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  56%|█████▌    | 138/247 [00:14<00:21,  4.97it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  60%|█████▉    | 148/247 [00:21<00:31,  3.16it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  64%|██████▍   | 158/247 [00:24<00:27,  3.24it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  68%|██████▊   | 167/247 [00:24<00:18,  4.24it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  71%|███████▏  | 176/247 [00:28<00:21,  3.26it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  73%|███████▎  | 181/247 [00:30<00:20,  3.25it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  75%|███████▍  | 185/247 [00:31<00:19,  3.11it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  77%|███████▋  | 189/247 [00:32<00:15,  3.74it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  81%|████████  | 200/247 [00:32<00:07,  6.29it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  83%|████████▎ | 206/247 [00:32<00:06,  6.72it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  87%|████████▋ | 215/247 [00:35<00:05,  5.47it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  89%|████████▊ | 219/247 [00:36<00:05,  5.34it/s]ClickHouse [ch-yellow.callcourier.com.pk]: 100%|██████████| 247/247 [00:36<00:00,  6.84it/s]
-[2026-02-23T10:31:59.597+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-23T10:31:59.597+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2262, in execute
-[2026-02-23T10:31:59.598+0000] {subprocess.py:93} INFO -     cur.execute(sql, *args)
-[2026-02-23T10:31:59.599+0000] {subprocess.py:93} INFO - pyodbc.Error: ('40001', '[40001] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Transaction (Process ID 631) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction. (1205) (SQLExecDirectW)')
-[2026-02-23T10:31:59.599+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:31:59.599+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-23T10:31:59.599+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:31:59.600+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-23T10:31:59.600+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
-[2026-02-23T10:31:59.600+0000] {subprocess.py:93} INFO -     App().run()
-[2026-02-23T10:31:59.600+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 288, in run
-[2026-02-23T10:31:59.600+0000] {subprocess.py:93} INFO -     sql_tables = SQLServerClient(config).fetch_tables()
-[2026-02-23T10:31:59.601+0000] {subprocess.py:93} INFO -                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:31:59.601+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 165, in fetch_tables
-[2026-02-23T10:31:59.601+0000] {subprocess.py:93} INFO -     df = pd.read_sql(query, conn)
-[2026-02-23T10:31:59.601+0000] {subprocess.py:93} INFO -          ^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:31:59.602+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 654, in read_sql
-[2026-02-23T10:31:59.602+0000] {subprocess.py:93} INFO -     return pandas_sql.read_query(
-[2026-02-23T10:31:59.602+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:31:59.602+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2326, in read_query
-[2026-02-23T10:31:59.602+0000] {subprocess.py:93} INFO -     cursor = self.execute(sql, params)
-[2026-02-23T10:31:59.603+0000] {subprocess.py:93} INFO -              ^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:31:59.603+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2274, in execute
-[2026-02-23T10:31:59.603+0000] {subprocess.py:93} INFO -     raise ex from exc
-[2026-02-23T10:31:59.603+0000] {subprocess.py:93} INFO - pandas.errors.DatabaseError: Execution failed on sql '
-[2026-02-23T10:31:59.603+0000] {subprocess.py:93} INFO -         SELECT s.name schema_name, t.name table_name, SUM(p.rows) row_count
-[2026-02-23T10:31:59.604+0000] {subprocess.py:93} INFO -         FROM sys.tables t
-[2026-02-23T10:31:59.604+0000] {subprocess.py:93} INFO -         JOIN sys.schemas s ON s.schema_id = t.schema_id
-[2026-02-23T10:31:59.604+0000] {subprocess.py:93} INFO -         JOIN sys.partitions p ON p.object_id = t.object_id
-[2026-02-23T10:31:59.604+0000] {subprocess.py:93} INFO -         WHERE p.index_id IN (0,1)
-[2026-02-23T10:31:59.604+0000] {subprocess.py:93} INFO -         GROUP BY s.name, t.name
-[2026-02-23T10:31:59.605+0000] {subprocess.py:93} INFO -         ': ('40001', '[40001] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Transaction (Process ID 631) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction. (1205) (SQLExecDirectW)')
-[2026-02-23T10:31:59.718+0000] {subprocess.py:97} INFO - Command exited with return code 1
-[2026-02-23T10:31:59.733+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
-    raise AirflowException(
-airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
-[2026-02-23T10:31:59.738+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260223T101500, start_date=20260223T103000, end_date=20260223T103159
-[2026-02-23T10:31:59.752+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 517 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 144967)
-[2026-02-23T10:31:59.784+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-02-23T10:31:59.802+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

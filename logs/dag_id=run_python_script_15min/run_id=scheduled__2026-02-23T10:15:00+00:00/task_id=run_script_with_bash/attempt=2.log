@@ -1,65 +1,0 @@
-[2026-02-23T10:37:00.341+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [queued]>
-[2026-02-23T10:37:00.350+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [queued]>
-[2026-02-23T10:37:00.350+0000] {taskinstance.py:2170} INFO - Starting attempt 2 of 2
-[2026-02-23T10:37:00.363+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-23 10:15:00+00:00
-[2026-02-23T10:37:00.369+0000] {standard_task_runner.py:60} INFO - Started process 145146 to run task
-[2026-02-23T10:37:00.374+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-23T10:15:00+00:00', '--job-id', '518', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmp4bl1u8dm']
-[2026-02-23T10:37:00.377+0000] {standard_task_runner.py:88} INFO - Job 518: Subtask run_script_with_bash
-[2026-02-23T10:37:00.436+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-23T10:15:00+00:00 [running]> on host d47ca292ab05
-[2026-02-23T10:37:00.530+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-23T10:15:00+00:00' AIRFLOW_CTX_TRY_NUMBER='2' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-23T10:15:00+00:00'
-[2026-02-23T10:37:00.532+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-02-23T10:37:00.532+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
-[2026-02-23T10:37:00.545+0000] {subprocess.py:86} INFO - Output:
-[2026-02-23T10:37:04.649+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:37:04.650+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
-[2026-02-23T10:37:04.650+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
-[2026-02-23T10:37:05.653+0000] {subprocess.py:93} INFO - 2026-02-23 10:37:05,653 | INFO     | Running for 🔵 Blue Environment
-[2026-02-23T10:37:43.822+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/185 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:  10%|█         | 19/185 [00:00<00:00, 179.33it/s]ClickHouse [ch-new.callcourier.com.pk]:  20%|██        | 37/185 [00:01<00:06, 24.09it/s] ClickHouse [ch-new.callcourier.com.pk]:  49%|████▉     | 91/185 [00:01<00:01, 74.82it/s]ClickHouse [ch-new.callcourier.com.pk]:  49%|████▉     | 91/185 [00:20<00:01, 74.82it/s]ClickHouse [ch-new.callcourier.com.pk]:  59%|█████▉    | 109/185 [00:21<00:21,  3.46it/s]ClickHouse [ch-new.callcourier.com.pk]:  61%|██████    | 112/185 [00:26<00:27,  2.67it/s]ClickHouse [ch-new.callcourier.com.pk]:  70%|██████▉   | 129/185 [00:32<00:20,  2.76it/s]ClickHouse [ch-new.callcourier.com.pk]:  76%|███████▌  | 140/185 [00:32<00:12,  3.52it/s]ClickHouse [ch-new.callcourier.com.pk]:  81%|████████  | 150/185 [00:34<00:08,  3.95it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 185/185 [00:34<00:00,  5.43it/s]
-[2026-02-23T10:37:44.315+0000] {subprocess.py:93} INFO - 2026-02-23 10:37:44,315 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
-[2026-02-23T10:37:44.316+0000] {subprocess.py:93} INFO - 2026-02-23 10:37:44,315 | INFO     | Running for 🟢 Green Environment
-[2026-02-23T10:38:19.690+0000] {subprocess.py:93} INFO - ClickHouse [ch-prod-green.callcourier.com.pk]:   0%|          | 0/185 [00:00<?, ?it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:   7%|▋         | 13/185 [00:00<00:01, 121.32it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  14%|█▍        | 26/185 [00:00<00:01, 99.44it/s] ClickHouse [ch-prod-green.callcourier.com.pk]:  35%|███▍      | 64/185 [00:00<00:00, 204.73it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  52%|█████▏    | 97/185 [00:00<00:00, 247.16it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  52%|█████▏    | 97/185 [00:11<00:00, 247.16it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  61%|██████    | 112/185 [00:24<00:27,  2.64it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  61%|██████    | 113/185 [00:25<00:28,  2.52it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  70%|███████   | 130/185 [00:29<00:18,  3.05it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  77%|███████▋  | 142/185 [00:29<00:10,  4.05it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  82%|████████▏ | 152/185 [00:31<00:07,  4.30it/s]ClickHouse [ch-prod-green.callcourier.com.pk]: 100%|██████████| 185/185 [00:31<00:00,  5.92it/s]
-[2026-02-23T10:49:34.065+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-23T10:49:34.065+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2262, in execute
-[2026-02-23T10:49:34.066+0000] {subprocess.py:93} INFO -     cur.execute(sql, *args)
-[2026-02-23T10:49:34.066+0000] {subprocess.py:93} INFO - pyodbc.Error: ('40001', '[40001] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Transaction (Process ID 273) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction. (1205) (SQLExecDirectW)')
-[2026-02-23T10:49:34.066+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:49:34.067+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-23T10:49:34.067+0000] {subprocess.py:93} INFO - 
-[2026-02-23T10:49:34.067+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-23T10:49:34.067+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
-[2026-02-23T10:49:34.067+0000] {subprocess.py:93} INFO -     App().run()
-[2026-02-23T10:49:34.068+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 288, in run
-[2026-02-23T10:49:34.068+0000] {subprocess.py:93} INFO -     sql_tables = SQLServerClient(config).fetch_tables()
-[2026-02-23T10:49:34.068+0000] {subprocess.py:93} INFO -                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:49:34.068+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 165, in fetch_tables
-[2026-02-23T10:49:34.069+0000] {subprocess.py:93} INFO -     df = pd.read_sql(query, conn)
-[2026-02-23T10:49:34.069+0000] {subprocess.py:93} INFO -          ^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:49:34.069+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 654, in read_sql
-[2026-02-23T10:49:34.069+0000] {subprocess.py:93} INFO -     return pandas_sql.read_query(
-[2026-02-23T10:49:34.069+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:49:34.070+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2326, in read_query
-[2026-02-23T10:49:34.070+0000] {subprocess.py:93} INFO -     cursor = self.execute(sql, params)
-[2026-02-23T10:49:34.070+0000] {subprocess.py:93} INFO -              ^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-23T10:49:34.070+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/sql.py", line 2274, in execute
-[2026-02-23T10:49:34.071+0000] {subprocess.py:93} INFO -     raise ex from exc
-[2026-02-23T10:49:34.071+0000] {subprocess.py:93} INFO - pandas.errors.DatabaseError: Execution failed on sql '
-[2026-02-23T10:49:34.071+0000] {subprocess.py:93} INFO -         SELECT s.name schema_name, t.name table_name, SUM(p.rows) row_count
-[2026-02-23T10:49:34.071+0000] {subprocess.py:93} INFO -         FROM sys.tables t
-[2026-02-23T10:49:34.071+0000] {subprocess.py:93} INFO -         JOIN sys.schemas s ON s.schema_id = t.schema_id
-[2026-02-23T10:49:34.072+0000] {subprocess.py:93} INFO -         JOIN sys.partitions p ON p.object_id = t.object_id
-[2026-02-23T10:49:34.072+0000] {subprocess.py:93} INFO -         WHERE p.index_id IN (0,1)
-[2026-02-23T10:49:34.072+0000] {subprocess.py:93} INFO -         GROUP BY s.name, t.name
-[2026-02-23T10:49:34.072+0000] {subprocess.py:93} INFO -         ': ('40001', '[40001] [Microsoft][ODBC Driver 18 for SQL Server][SQL Server]Transaction (Process ID 273) was deadlocked on lock resources with another process and has been chosen as the deadlock victim. Rerun the transaction. (1205) (SQLExecDirectW)')
-[2026-02-23T10:49:34.208+0000] {subprocess.py:97} INFO - Command exited with return code 1
-[2026-02-23T10:49:34.223+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
-    raise AirflowException(
-airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
-[2026-02-23T10:49:34.228+0000] {taskinstance.py:1138} INFO - Marking task as FAILED. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260223T101500, start_date=20260223T103700, end_date=20260223T104934
-[2026-02-23T10:49:34.242+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 518 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 145146)
-[2026-02-23T10:49:34.250+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-02-23T10:49:34.271+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

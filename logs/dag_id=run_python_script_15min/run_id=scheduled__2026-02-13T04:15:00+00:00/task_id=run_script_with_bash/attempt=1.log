@@ -1,104 +1,0 @@
-[2026-02-13T04:30:00.904+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-13T04:15:00+00:00 [queued]>
-[2026-02-13T04:30:00.916+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-13T04:15:00+00:00 [queued]>
-[2026-02-13T04:30:00.916+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
-[2026-02-13T04:30:00.931+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-13 04:15:00+00:00
-[2026-02-13T04:30:00.938+0000] {standard_task_runner.py:60} INFO - Started process 23262 to run task
-[2026-02-13T04:30:00.943+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-13T04:15:00+00:00', '--job-id', '73', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmp0q4ol_1b']
-[2026-02-13T04:30:00.947+0000] {standard_task_runner.py:88} INFO - Job 73: Subtask run_script_with_bash
-[2026-02-13T04:30:01.013+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-13T04:15:00+00:00 [running]> on host 605a2f14a00a
-[2026-02-13T04:30:01.120+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-13T04:15:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-13T04:15:00+00:00'
-[2026-02-13T04:30:01.122+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-02-13T04:30:01.123+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
-[2026-02-13T04:30:01.135+0000] {subprocess.py:86} INFO - Output:
-[2026-02-13T04:30:05.474+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:30:05.474+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
-[2026-02-13T04:30:05.475+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
-[2026-02-13T04:30:06.588+0000] {subprocess.py:93} INFO - 2026-02-13 04:30:06,588 | INFO     | Running for 🔵 Blue Environment
-[2026-02-13T04:31:13.181+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/161 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:   4%|▍         | 7/161 [00:00<00:03, 41.64it/s]ClickHouse [ch-new.callcourier.com.pk]:   8%|▊         | 13/161 [00:00<00:03, 44.99it/s]ClickHouse [ch-new.callcourier.com.pk]:  14%|█▎        | 22/161 [00:00<00:02, 52.52it/s]ClickHouse [ch-new.callcourier.com.pk]:  19%|█▉        | 31/161 [00:00<00:02, 59.10it/s]ClickHouse [ch-new.callcourier.com.pk]:  23%|██▎       | 37/161 [00:00<00:02, 58.95it/s]ClickHouse [ch-new.callcourier.com.pk]:  29%|██▊       | 46/161 [00:00<00:01, 66.77it/s]ClickHouse [ch-new.callcourier.com.pk]:  36%|███▌      | 58/161 [00:00<00:01, 80.70it/s]ClickHouse [ch-new.callcourier.com.pk]:  45%|████▌     | 73/161 [00:00<00:00, 100.37it/s]ClickHouse [ch-new.callcourier.com.pk]:  57%|█████▋    | 91/161 [00:02<00:03, 18.89it/s] ClickHouse [ch-new.callcourier.com.pk]:  57%|█████▋    | 91/161 [00:20<00:03, 18.89it/s]ClickHouse [ch-new.callcourier.com.pk]:  60%|██████    | 97/161 [00:47<01:23,  1.30s/it]ClickHouse [ch-new.callcourier.com.pk]:  61%|██████    | 98/161 [00:51<01:27,  1.39s/it]ClickHouse [ch-new.callcourier.com.pk]:  66%|██████▌   | 106/161 [01:01<01:15,  1.37s/it]ClickHouse [ch-new.callcourier.com.pk]:  70%|██████▉   | 112/161 [01:02<00:50,  1.04s/it]ClickHouse [ch-new.callcourier.com.pk]:  73%|███████▎  | 118/161 [01:02<00:34,  1.24it/s]ClickHouse [ch-new.callcourier.com.pk]:  77%|███████▋  | 124/161 [01:06<00:27,  1.36it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 161/161 [01:06<00:00,  2.43it/s]
-[2026-02-13T04:31:13.940+0000] {subprocess.py:93} INFO - 2026-02-13 04:31:13,939 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
-[2026-02-13T04:31:13.940+0000] {subprocess.py:93} INFO - 2026-02-13 04:31:13,940 | INFO     | Running for 🟢 Green Environment
-[2026-02-13T04:31:44.322+0000] {subprocess.py:93} INFO - ClickHouse [ch-prod-green.callcourier.com.pk]:   0%|          | 0/164 [00:00<?, ?it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:   4%|▍         | 7/164 [00:00<00:06, 25.07it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  10%|▉         | 16/164 [00:00<00:03, 46.65it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  17%|█▋        | 28/164 [00:00<00:02, 65.53it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  24%|██▍       | 40/164 [00:00<00:01, 70.99it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  32%|███▏      | 52/164 [00:00<00:01, 82.92it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  39%|███▉      | 64/164 [00:00<00:01, 92.96it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  46%|████▋     | 76/164 [00:00<00:00, 95.93it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  55%|█████▌    | 91/164 [00:05<00:09,  7.78it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  60%|█████▉    | 98/164 [00:13<00:21,  3.08it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  63%|██████▎   | 103/164 [00:25<00:41,  1.46it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  66%|██████▋   | 109/164 [00:28<00:34,  1.59it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  73%|███████▎  | 119/164 [00:28<00:18,  2.41it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  77%|███████▋  | 127/164 [00:30<00:12,  2.86it/s]ClickHouse [ch-prod-green.callcourier.com.pk]: 100%|██████████| 164/164 [00:30<00:00,  5.44it/s]
-[2026-02-13T04:31:44.807+0000] {subprocess.py:93} INFO - 2026-02-13 04:31:44,807 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__green_environment.csv
-[2026-02-13T04:31:44.808+0000] {subprocess.py:93} INFO - 2026-02-13 04:31:44,807 | INFO     | Running for 🟡 Yellow Environment
-[2026-02-13T04:32:05.360+0000] {subprocess.py:93} INFO - ClickHouse [ch-yellow.callcourier.com.pk]:   0%|          | 0/144 [00:00<?, ?it/s]ClickHouse [ch-yellow.callcourier.com.pk]:   6%|▌         | 8/144 [00:00<00:02, 64.24it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  30%|██▉       | 43/144 [00:00<00:00, 208.41it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  53%|█████▎    | 76/144 [00:00<00:00, 253.41it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  53%|█████▎    | 76/144 [00:11<00:00, 253.41it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  68%|██████▊   | 98/144 [00:12<00:08,  5.34it/s] ClickHouse [ch-yellow.callcourier.com.pk]:  74%|███████▎  | 106/144 [00:18<00:10,  3.66it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  85%|████████▍ | 122/144 [00:18<00:04,  5.14it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  94%|█████████▍| 136/144 [00:20<00:01,  5.72it/s]ClickHouse [ch-yellow.callcourier.com.pk]: 100%|██████████| 144/144 [00:20<00:00,  7.08it/s]
-[2026-02-13T04:32:06.365+0000] {subprocess.py:93} INFO - 2026-02-13 04:32:06,364 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__yellow_environment.csv
-[2026-02-13T04:32:10.370+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-13T04:32:10.370+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 203, in _new_conn
-[2026-02-13T04:32:10.371+0000] {subprocess.py:93} INFO -     sock = connection.create_connection(
-[2026-02-13T04:32:10.371+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.371+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
-[2026-02-13T04:32:10.372+0000] {subprocess.py:93} INFO -     raise err
-[2026-02-13T04:32:10.372+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
-[2026-02-13T04:32:10.372+0000] {subprocess.py:93} INFO -     sock.connect(sa)
-[2026-02-13T04:32:10.373+0000] {subprocess.py:93} INFO - OSError: [Errno 101] Network is unreachable
-[2026-02-13T04:32:10.373+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.373+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-13T04:32:10.373+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.374+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-13T04:32:10.374+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 791, in urlopen
-[2026-02-13T04:32:10.374+0000] {subprocess.py:93} INFO -     response = self._make_request(
-[2026-02-13T04:32:10.374+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.375+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 492, in _make_request
-[2026-02-13T04:32:10.375+0000] {subprocess.py:93} INFO -     raise new_e
-[2026-02-13T04:32:10.375+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 468, in _make_request
-[2026-02-13T04:32:10.376+0000] {subprocess.py:93} INFO -     self._validate_conn(conn)
-[2026-02-13T04:32:10.376+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1097, in _validate_conn
-[2026-02-13T04:32:10.376+0000] {subprocess.py:93} INFO -     conn.connect()
-[2026-02-13T04:32:10.376+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 611, in connect
-[2026-02-13T04:32:10.377+0000] {subprocess.py:93} INFO -     self.sock = sock = self._new_conn()
-[2026-02-13T04:32:10.377+0000] {subprocess.py:93} INFO -                        ^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.377+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 218, in _new_conn
-[2026-02-13T04:32:10.377+0000] {subprocess.py:93} INFO -     raise NewConnectionError(
-[2026-02-13T04:32:10.378+0000] {subprocess.py:93} INFO - urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x772fafe63150>: Failed to establish a new connection: [Errno 101] Network is unreachable
-[2026-02-13T04:32:10.378+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.378+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-13T04:32:10.378+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.379+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-13T04:32:10.379+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/adapters.py", line 486, in send
-[2026-02-13T04:32:10.379+0000] {subprocess.py:93} INFO -     resp = conn.urlopen(
-[2026-02-13T04:32:10.379+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^
-[2026-02-13T04:32:10.379+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 845, in urlopen
-[2026-02-13T04:32:10.380+0000] {subprocess.py:93} INFO -     retries = retries.increment(
-[2026-02-13T04:32:10.380+0000] {subprocess.py:93} INFO -               ^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.380+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/retry.py", line 515, in increment
-[2026-02-13T04:32:10.380+0000] {subprocess.py:93} INFO -     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
-[2026-02-13T04:32:10.381+0000] {subprocess.py:93} INFO -     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.381+0000] {subprocess.py:93} INFO - urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='chat.googleapis.com', port=443): Max retries exceeded with url: /v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x772fafe63150>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
-[2026-02-13T04:32:10.381+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.381+0000] {subprocess.py:93} INFO - During handling of the above exception, another exception occurred:
-[2026-02-13T04:32:10.382+0000] {subprocess.py:93} INFO - 
-[2026-02-13T04:32:10.382+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-13T04:32:10.382+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
-[2026-02-13T04:32:10.382+0000] {subprocess.py:93} INFO -     App().run()
-[2026-02-13T04:32:10.383+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 295, in run
-[2026-02-13T04:32:10.383+0000] {subprocess.py:93} INFO -     send_google_chat_alert(env_results, thresholds)
-[2026-02-13T04:32:10.383+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 272, in send_google_chat_alert
-[2026-02-13T04:32:10.383+0000] {subprocess.py:93} INFO -     requests.post(WEBHOOK_URL, json=payload)
-[2026-02-13T04:32:10.384+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/api.py", line 115, in post
-[2026-02-13T04:32:10.384+0000] {subprocess.py:93} INFO -     return request("post", url, data=data, json=json, **kwargs)
-[2026-02-13T04:32:10.384+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.384+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/api.py", line 59, in request
-[2026-02-13T04:32:10.385+0000] {subprocess.py:93} INFO -     return session.request(method=method, url=url, **kwargs)
-[2026-02-13T04:32:10.385+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.385+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
-[2026-02-13T04:32:10.385+0000] {subprocess.py:93} INFO -     resp = self.send(prep, **send_kwargs)
-[2026-02-13T04:32:10.386+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.386+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
-[2026-02-13T04:32:10.386+0000] {subprocess.py:93} INFO -     r = adapter.send(request, **kwargs)
-[2026-02-13T04:32:10.386+0000] {subprocess.py:93} INFO -         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-13T04:32:10.387+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/adapters.py", line 519, in send
-[2026-02-13T04:32:10.387+0000] {subprocess.py:93} INFO -     raise ConnectionError(e, request=request)
-[2026-02-13T04:32:10.387+0000] {subprocess.py:93} INFO - requests.exceptions.ConnectionError: HTTPSConnectionPool(host='chat.googleapis.com', port=443): Max retries exceeded with url: /v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x772fafe63150>: Failed to establish a new connection: [Errno 101] Network is unreachable'))
-[2026-02-13T04:32:10.517+0000] {subprocess.py:97} INFO - Command exited with return code 1
-[2026-02-13T04:32:10.534+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
-    raise AirflowException(
-airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
-[2026-02-13T04:32:10.539+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260213T041500, start_date=20260213T043000, end_date=20260213T043210
-[2026-02-13T04:32:10.556+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 73 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 23262)
-[2026-02-13T04:32:10.588+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-02-13T04:32:10.607+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
