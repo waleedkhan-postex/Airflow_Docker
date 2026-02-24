@@ -24,8 +24,9 @@ __pycache__/
 .venv/                 # Local virtual environments
 
 # =========================
-# OS files
+# Editor / OS files
 # =========================
+*.swp                  # Swap files from Vim or similar editors
 .DS_Store
 Thumbs.db
 
