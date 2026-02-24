@@ -1,106 +1,0 @@
-[2026-02-17T05:37:08.672+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-17T05:37:07.482518+00:00 [queued]>
-[2026-02-17T05:37:08.684+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-17T05:37:07.482518+00:00 [queued]>
-[2026-02-17T05:37:08.685+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
-[2026-02-17T05:37:08.699+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-17 05:37:07.482518+00:00
-[2026-02-17T05:37:08.705+0000] {standard_task_runner.py:60} INFO - Started process 23415 to run task
-[2026-02-17T05:37:08.710+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'manual__2026-02-17T05:37:07.482518+00:00', '--job-id', '224', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmprs3v9_b1']
-[2026-02-17T05:37:08.715+0000] {standard_task_runner.py:88} INFO - Job 224: Subtask run_script_with_bash
-[2026-02-17T05:37:08.776+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-17T05:37:07.482518+00:00 [running]> on host c7394258997f
-[2026-02-17T05:37:08.877+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-17T05:37:07.482518+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-02-17T05:37:07.482518+00:00'
-[2026-02-17T05:37:08.879+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
-[2026-02-17T05:37:08.880+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
-[2026-02-17T05:37:08.893+0000] {subprocess.py:86} INFO - Output:
-[2026-02-17T05:37:13.151+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:37:13.152+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
-[2026-02-17T05:37:13.152+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
-[2026-02-17T05:37:14.258+0000] {subprocess.py:93} INFO - 2026-02-17 05:37:14,258 | INFO     | Running for 🔵 Blue Environment
-[2026-02-17T05:37:29.332+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/161 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:   8%|▊         | 13/161 [00:00<00:01, 126.33it/s]ClickHouse [ch-new.callcourier.com.pk]:  42%|████▏     | 67/161 [00:00<00:00, 359.09it/s]ClickHouse [ch-new.callcourier.com.pk]:  64%|██████▍   | 103/161 [00:08<00:05,  9.73it/s]ClickHouse [ch-new.callcourier.com.pk]:  76%|███████▋  | 123/161 [00:13<00:05,  6.95it/s]ClickHouse [ch-new.callcourier.com.pk]:  84%|████████▍ | 136/161 [00:14<00:03,  7.35it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 161/161 [00:14<00:00, 10.83it/s]
-[2026-02-17T05:37:29.965+0000] {subprocess.py:93} INFO - 2026-02-17 05:37:29,965 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
-[2026-02-17T05:37:29.966+0000] {subprocess.py:93} INFO - 2026-02-17 05:37:29,965 | INFO     | Running for 🟢 Green Environment
-[2026-02-17T05:37:48.138+0000] {subprocess.py:93} INFO - ClickHouse [ch-prod-green.callcourier.com.pk]:   0%|          | 0/164 [00:00<?, ?it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:   8%|▊         | 13/164 [00:00<00:01, 126.62it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  35%|███▌      | 58/164 [00:00<00:00, 309.54it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  55%|█████▌    | 91/164 [00:01<00:01, 44.28it/s] ClickHouse [ch-prod-green.callcourier.com.pk]:  55%|█████▌    | 91/164 [00:14<00:01, 44.28it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  66%|██████▋   | 109/164 [00:16<00:12,  4.31it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  73%|███████▎  | 119/164 [00:16<00:08,  5.14it/s]ClickHouse [ch-prod-green.callcourier.com.pk]:  81%|████████  | 133/164 [00:17<00:05,  5.82it/s]ClickHouse [ch-prod-green.callcourier.com.pk]: 100%|██████████| 164/164 [00:17<00:00,  9.13it/s]
-[2026-02-17T05:37:48.460+0000] {subprocess.py:93} INFO - 2026-02-17 05:37:48,459 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__green_environment.csv
-[2026-02-17T05:37:48.460+0000] {subprocess.py:93} INFO - 2026-02-17 05:37:48,460 | INFO     | Running for 🟡 Yellow Environment
-[2026-02-17T05:38:08.844+0000] {subprocess.py:93} INFO - ClickHouse [ch-yellow.callcourier.com.pk]:   0%|          | 0/144 [00:00<?, ?it/s]ClickHouse [ch-yellow.callcourier.com.pk]:   5%|▍         | 7/144 [00:00<00:02, 61.98it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  26%|██▌       | 37/144 [00:00<00:00, 191.88it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  49%|████▊     | 70/144 [00:00<00:00, 246.07it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  66%|██████▌   | 95/144 [00:03<00:02, 17.56it/s] ClickHouse [ch-yellow.callcourier.com.pk]:  66%|██████▌   | 95/144 [00:15<00:02, 17.56it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  74%|███████▎  | 106/144 [00:18<00:11,  3.34it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  80%|███████▉  | 115/144 [00:18<00:07,  4.07it/s]ClickHouse [ch-yellow.callcourier.com.pk]:  89%|████████▉ | 128/144 [00:20<00:03,  4.62it/s]ClickHouse [ch-yellow.callcourier.com.pk]: 100%|██████████| 144/144 [00:20<00:00,  7.14it/s]
-[2026-02-17T05:38:09.083+0000] {subprocess.py:93} INFO - 2026-02-17 05:38:09,082 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__yellow_environment.csv
-[2026-02-17T05:38:25.091+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-17T05:38:25.092+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 203, in _new_conn
-[2026-02-17T05:38:25.092+0000] {subprocess.py:93} INFO -     sock = connection.create_connection(
-[2026-02-17T05:38:25.092+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.093+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/connection.py", line 60, in create_connection
-[2026-02-17T05:38:25.093+0000] {subprocess.py:93} INFO -     for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
-[2026-02-17T05:38:25.093+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.093+0000] {subprocess.py:93} INFO -   File "/usr/local/lib/python3.11/socket.py", line 962, in getaddrinfo
-[2026-02-17T05:38:25.094+0000] {subprocess.py:93} INFO -     for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
-[2026-02-17T05:38:25.094+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.094+0000] {subprocess.py:93} INFO - socket.gaierror: [Errno -3] Temporary failure in name resolution
-[2026-02-17T05:38:25.094+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.095+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-17T05:38:25.095+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.095+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-17T05:38:25.095+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 791, in urlopen
-[2026-02-17T05:38:25.096+0000] {subprocess.py:93} INFO -     response = self._make_request(
-[2026-02-17T05:38:25.096+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.096+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 492, in _make_request
-[2026-02-17T05:38:25.096+0000] {subprocess.py:93} INFO -     raise new_e
-[2026-02-17T05:38:25.097+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 468, in _make_request
-[2026-02-17T05:38:25.097+0000] {subprocess.py:93} INFO -     self._validate_conn(conn)
-[2026-02-17T05:38:25.097+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1097, in _validate_conn
-[2026-02-17T05:38:25.098+0000] {subprocess.py:93} INFO -     conn.connect()
-[2026-02-17T05:38:25.098+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 611, in connect
-[2026-02-17T05:38:25.098+0000] {subprocess.py:93} INFO -     self.sock = sock = self._new_conn()
-[2026-02-17T05:38:25.098+0000] {subprocess.py:93} INFO -                        ^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.099+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 210, in _new_conn
-[2026-02-17T05:38:25.099+0000] {subprocess.py:93} INFO -     raise NameResolutionError(self.host, self, e) from e
-[2026-02-17T05:38:25.099+0000] {subprocess.py:93} INFO - urllib3.exceptions.NameResolutionError: <urllib3.connection.HTTPSConnection object at 0x7e2fed4b45d0>: Failed to resolve 'chat.googleapis.com' ([Errno -3] Temporary failure in name resolution)
-[2026-02-17T05:38:25.099+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.100+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
-[2026-02-17T05:38:25.100+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.100+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-17T05:38:25.100+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/adapters.py", line 486, in send
-[2026-02-17T05:38:25.101+0000] {subprocess.py:93} INFO -     resp = conn.urlopen(
-[2026-02-17T05:38:25.101+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^
-[2026-02-17T05:38:25.101+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 845, in urlopen
-[2026-02-17T05:38:25.101+0000] {subprocess.py:93} INFO -     retries = retries.increment(
-[2026-02-17T05:38:25.102+0000] {subprocess.py:93} INFO -               ^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.102+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/retry.py", line 515, in increment
-[2026-02-17T05:38:25.102+0000] {subprocess.py:93} INFO -     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
-[2026-02-17T05:38:25.102+0000] {subprocess.py:93} INFO -     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.103+0000] {subprocess.py:93} INFO - urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='chat.googleapis.com', port=443): Max retries exceeded with url: /v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2fed4b45d0>: Failed to resolve 'chat.googleapis.com' ([Errno -3] Temporary failure in name resolution)"))
-[2026-02-17T05:38:25.103+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.103+0000] {subprocess.py:93} INFO - During handling of the above exception, another exception occurred:
-[2026-02-17T05:38:25.103+0000] {subprocess.py:93} INFO - 
-[2026-02-17T05:38:25.103+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
-[2026-02-17T05:38:25.104+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
-[2026-02-17T05:38:25.104+0000] {subprocess.py:93} INFO -     App().run()
-[2026-02-17T05:38:25.104+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 295, in run
-[2026-02-17T05:38:25.105+0000] {subprocess.py:93} INFO -     send_google_chat_alert(env_results, thresholds)
-[2026-02-17T05:38:25.105+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 272, in send_google_chat_alert
-[2026-02-17T05:38:25.105+0000] {subprocess.py:93} INFO -     requests.post(WEBHOOK_URL, json=payload)
-[2026-02-17T05:38:25.105+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/api.py", line 115, in post
-[2026-02-17T05:38:25.106+0000] {subprocess.py:93} INFO -     return request("post", url, data=data, json=json, **kwargs)
-[2026-02-17T05:38:25.106+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.106+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/api.py", line 59, in request
-[2026-02-17T05:38:25.106+0000] {subprocess.py:93} INFO -     return session.request(method=method, url=url, **kwargs)
-[2026-02-17T05:38:25.106+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.107+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
-[2026-02-17T05:38:25.107+0000] {subprocess.py:93} INFO -     resp = self.send(prep, **send_kwargs)
-[2026-02-17T05:38:25.107+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.108+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
-[2026-02-17T05:38:25.108+0000] {subprocess.py:93} INFO -     r = adapter.send(request, **kwargs)
-[2026-02-17T05:38:25.108+0000] {subprocess.py:93} INFO -         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[2026-02-17T05:38:25.108+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/requests/adapters.py", line 519, in send
-[2026-02-17T05:38:25.109+0000] {subprocess.py:93} INFO -     raise ConnectionError(e, request=request)
-[2026-02-17T05:38:25.109+0000] {subprocess.py:93} INFO - requests.exceptions.ConnectionError: HTTPSConnectionPool(host='chat.googleapis.com', port=443): Max retries exceeded with url: /v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x7e2fed4b45d0>: Failed to resolve 'chat.googleapis.com' ([Errno -3] Temporary failure in name resolution)"))
-[2026-02-17T05:38:25.231+0000] {subprocess.py:97} INFO - Command exited with return code 1
-[2026-02-17T05:38:25.248+0000] {taskinstance.py:2698} ERROR - Task failed with exception
-Traceback (most recent call last):
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
-    result = execute_callable(context=context, **execute_callable_kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
-    raise AirflowException(
-airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
-[2026-02-17T05:38:25.254+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260217T053707, start_date=20260217T053708, end_date=20260217T053825
-[2026-02-17T05:38:25.272+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 224 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 23415)
-[2026-02-17T05:38:25.306+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
-[2026-02-17T05:38:25.328+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
