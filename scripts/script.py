@@ -69,6 +69,7 @@ class Config:
         "HRM": "HRM",
         "GoGreen": "GG",
         "Cloud_GoGreen": "CGG",
+        "SharedObject" : "SO",
     }
 
     def __init__(self, ch_host, ch_port):
