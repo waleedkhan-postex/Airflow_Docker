@@ -1,0 +1,62 @@
+[2026-02-12T12:19:14.114+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-12T12:19:13.313147+00:00 [queued]>
+[2026-02-12T12:19:14.130+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-12T12:19:13.313147+00:00 [queued]>
+[2026-02-12T12:19:14.130+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-02-12T12:19:14.154+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-12 12:19:13.313147+00:00
+[2026-02-12T12:19:14.175+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'manual__2026-02-12T12:19:13.313147+00:00', '--job-id', '3', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmpi0xd3sce']
+[2026-02-12T12:19:14.180+0000] {standard_task_runner.py:88} INFO - Job 3: Subtask run_script_with_bash
+[2026-02-12T12:19:14.171+0000] {standard_task_runner.py:60} INFO - Started process 213 to run task
+[2026-02-12T12:19:14.277+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash manual__2026-02-12T12:19:13.313147+00:00 [running]> on host 605a2f14a00a
+[2026-02-12T12:19:14.388+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-12T12:19:13.313147+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2026-02-12T12:19:13.313147+00:00'
+[2026-02-12T12:19:14.390+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-02-12T12:19:14.391+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
+[2026-02-12T12:19:14.405+0000] {subprocess.py:86} INFO - Output:
+[2026-02-12T12:19:25.567+0000] {subprocess.py:93} INFO - 
+[2026-02-12T12:19:25.568+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
+[2026-02-12T12:19:25.569+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
+[2026-02-12T12:19:27.549+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-12T12:19:27.550+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/compat/_optional.py", line 132, in import_optional_dependency
+[2026-02-12T12:19:27.550+0000] {subprocess.py:93} INFO -     module = importlib.import_module(name)
+[2026-02-12T12:19:27.550+0000] {subprocess.py:93} INFO -              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T12:19:27.550+0000] {subprocess.py:93} INFO -   File "/usr/local/lib/python3.11/importlib/__init__.py", line 126, in import_module
+[2026-02-12T12:19:27.551+0000] {subprocess.py:93} INFO -     return _bootstrap._gcd_import(name[level:], package, level)
+[2026-02-12T12:19:27.551+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T12:19:27.551+0000] {subprocess.py:93} INFO -   File "<frozen importlib._bootstrap>", line 1204, in _gcd_import
+[2026-02-12T12:19:27.551+0000] {subprocess.py:93} INFO -   File "<frozen importlib._bootstrap>", line 1176, in _find_and_load
+[2026-02-12T12:19:27.551+0000] {subprocess.py:93} INFO -   File "<frozen importlib._bootstrap>", line 1140, in _find_and_load_unlocked
+[2026-02-12T12:19:27.552+0000] {subprocess.py:93} INFO - ModuleNotFoundError: No module named 'openpyxl'
+[2026-02-12T12:19:27.552+0000] {subprocess.py:93} INFO - 
+[2026-02-12T12:19:27.552+0000] {subprocess.py:93} INFO - During handling of the above exception, another exception occurred:
+[2026-02-12T12:19:27.552+0000] {subprocess.py:93} INFO - 
+[2026-02-12T12:19:27.553+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-12T12:19:27.553+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
+[2026-02-12T12:19:27.553+0000] {subprocess.py:93} INFO -     App().run()
+[2026-02-12T12:19:27.553+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 280, in run
+[2026-02-12T12:19:27.554+0000] {subprocess.py:93} INFO -     thresholds = ThresholdLoader.load()
+[2026-02-12T12:19:27.554+0000] {subprocess.py:93} INFO -                  ^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T12:19:27.554+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 97, in load
+[2026-02-12T12:19:27.554+0000] {subprocess.py:93} INFO -     df = pd.read_excel(THRESHOLD_FILE)
+[2026-02-12T12:19:27.554+0000] {subprocess.py:93} INFO -          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T12:19:27.555+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/excel/_base.py", line 504, in read_excel
+[2026-02-12T12:19:27.555+0000] {subprocess.py:93} INFO -     io = ExcelFile(
+[2026-02-12T12:19:27.555+0000] {subprocess.py:93} INFO -          ^^^^^^^^^^
+[2026-02-12T12:19:27.555+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/excel/_base.py", line 1580, in __init__
+[2026-02-12T12:19:27.556+0000] {subprocess.py:93} INFO -     self._reader = self._engines[engine](
+[2026-02-12T12:19:27.556+0000] {subprocess.py:93} INFO -                    ^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T12:19:27.556+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/io/excel/_openpyxl.py", line 552, in __init__
+[2026-02-12T12:19:27.556+0000] {subprocess.py:93} INFO -     import_optional_dependency("openpyxl")
+[2026-02-12T12:19:27.556+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/pandas/compat/_optional.py", line 135, in import_optional_dependency
+[2026-02-12T12:19:27.557+0000] {subprocess.py:93} INFO -     raise ImportError(msg)
+[2026-02-12T12:19:27.557+0000] {subprocess.py:93} INFO - ImportError: Missing optional dependency 'openpyxl'.  Use pip or conda to install openpyxl.
+[2026-02-12T12:19:27.705+0000] {subprocess.py:97} INFO - Command exited with return code 1
+[2026-02-12T12:19:27.721+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
+[2026-02-12T12:19:27.725+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260212T121913, start_date=20260212T121914, end_date=20260212T121927
+[2026-02-12T12:19:27.743+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 3 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 213)
+[2026-02-12T12:19:27.788+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-02-12T12:19:27.810+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

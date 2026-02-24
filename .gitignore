@@ -1,0 +1,36 @@
+# =========================
+# Docker & Compose
+# =========================
+Dockerfile
+docker-compose.override.yml
+.dockerignore
+
+# =========================
+# Airflow generated files
+# =========================
+logs/                  # Airflow logs (runtime)
+*.db                   # SQLite database files
+*.db-journal           # SQLite journal files
+airflow.cfg            # Optional if generated, keep in repo if customized
+
+# =========================
+# Python artifacts
+# =========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env                  # Environment variables (secrets)
+.venv/                 # Local virtual environments
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Ignore temp cache inside DAGs/plugins
+# =========================
+dags/__pycache__/
+plugins/__pycache__/

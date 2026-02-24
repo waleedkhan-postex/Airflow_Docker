@@ -1,0 +1,17 @@
+table,sql,ch,diff
+cgg_opsdeldeb_tblopsdeliverydebriefingdetail,167469282,165610699,1858583
+gg_dbo_call_logs,54613,0,54613
+cgg_opsdeldeb_tblopsdeliverydebriefing,3834609,3787987,46622
+cgg_opsdeldeb_tblopsdeliverydebriefing_exception_log_master,223844,219933,3911
+gg_dbo_cntrack,2222688781,2222686565,2216
+hrm_hr_employees,48712,48370,342
+gg_dbo_employeecellnumber,46906,46635,271
+gg_dbo_couriersheet,309401352,309401089,263
+gg_dbo_booking,116437717,116437520,197
+gg_dbo_reasonphaseii,37544170,37544155,15
+gg_dbo_cnfinanceoperationdetail,102949707,102949699,8
+gg_dbo_shipmentcollection,110471031,110471025,6
+gg_dbo_reasonphasei,37606908,37606904,4
+gg_dbo_cntrackaccounts,727557713,727557711,2
+hrm_hr_branches,201,200,1
+gg_dbo_generalclientaccount,226968,226967,1

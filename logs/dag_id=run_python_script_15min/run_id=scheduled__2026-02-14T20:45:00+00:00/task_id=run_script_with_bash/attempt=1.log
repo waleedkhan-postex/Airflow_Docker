@@ -1,0 +1,116 @@
+[2026-02-14T21:00:01.206+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-14T20:45:00+00:00 [queued]>
+[2026-02-14T21:00:01.216+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-14T20:45:00+00:00 [queued]>
+[2026-02-14T21:00:01.216+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-02-14T21:00:01.229+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-14 20:45:00+00:00
+[2026-02-14T21:00:01.236+0000] {standard_task_runner.py:60} INFO - Started process 47673 to run task
+[2026-02-14T21:00:01.240+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-14T20:45:00+00:00', '--job-id', '250', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmp_mrre9z5']
+[2026-02-14T21:00:01.244+0000] {standard_task_runner.py:88} INFO - Job 250: Subtask run_script_with_bash
+[2026-02-14T21:00:01.301+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-14T20:45:00+00:00 [running]> on host 605a2f14a00a
+[2026-02-14T21:00:01.398+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-14T20:45:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-14T20:45:00+00:00'
+[2026-02-14T21:00:01.400+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-02-14T21:00:01.401+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
+[2026-02-14T21:00:01.411+0000] {subprocess.py:86} INFO - Output:
+[2026-02-14T21:00:05.694+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:05.695+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
+[2026-02-14T21:00:05.695+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
+[2026-02-14T21:00:06.728+0000] {subprocess.py:93} INFO - 2026-02-14 21:00:06,727 | INFO     | Running for 🔵 Blue Environment
+[2026-02-14T21:00:47.539+0000] {subprocess.py:93} INFO - ClickHouse [ch-new.callcourier.com.pk]:   0%|          | 0/161 [00:00<?, ?it/s]ClickHouse [ch-new.callcourier.com.pk]:   4%|▍         | 7/161 [00:00<00:02, 59.37it/s]ClickHouse [ch-new.callcourier.com.pk]:  19%|█▉        | 31/161 [00:00<00:00, 152.47it/s]ClickHouse [ch-new.callcourier.com.pk]:  36%|███▌      | 58/161 [00:00<00:00, 200.85it/s]ClickHouse [ch-new.callcourier.com.pk]:  55%|█████▍    | 88/161 [00:00<00:00, 235.74it/s]ClickHouse [ch-new.callcourier.com.pk]:  55%|█████▍    | 88/161 [00:20<00:00, 235.74it/s]ClickHouse [ch-new.callcourier.com.pk]:  60%|██████    | 97/161 [00:20<00:24,  2.58it/s] ClickHouse [ch-new.callcourier.com.pk]:  61%|██████    | 98/161 [00:22<00:26,  2.34it/s]ClickHouse [ch-new.callcourier.com.pk]:  71%|███████   | 114/161 [00:38<00:30,  1.56it/s]ClickHouse [ch-new.callcourier.com.pk]:  72%|███████▏  | 116/161 [00:38<00:27,  1.65it/s]ClickHouse [ch-new.callcourier.com.pk]:  79%|███████▉  | 127/161 [00:40<00:15,  2.19it/s]ClickHouse [ch-new.callcourier.com.pk]: 100%|██████████| 161/161 [00:40<00:00,  3.96it/s]
+[2026-02-14T21:00:48.084+0000] {subprocess.py:93} INFO - 2026-02-14 21:00:48,084 | INFO     | CSV written: /opt/***/scripts/output/files/table_comparison__blue_environment.csv
+[2026-02-14T21:00:48.084+0000] {subprocess.py:93} INFO - 2026-02-14 21:00:48,084 | INFO     | Running for 🟢 Green Environment
+[2026-02-14T21:00:51.246+0000] {subprocess.py:93} INFO - 2026-02-14 21:00:51,246 | WARNING  | Retrying (Retry(total=0, connect=None, read=None, redirect=0, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7bee75ede090>: Failed to establish a new connection: [Errno 113] No route to host')': /?query_id=6d6da9bd-5e39-4eaa-8694-79dbfa08cc95
+[2026-02-14T21:00:54.318+0000] {subprocess.py:93} INFO - 2026-02-14 21:00:54,318 | WARNING  | Unexpected Http Driver Exception
+[2026-02-14T21:00:54.319+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-14T21:00:54.319+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 203, in _new_conn
+[2026-02-14T21:00:54.319+0000] {subprocess.py:93} INFO -     sock = connection.create_connection(
+[2026-02-14T21:00:54.320+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.320+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+[2026-02-14T21:00:54.320+0000] {subprocess.py:93} INFO -     raise err
+[2026-02-14T21:00:54.320+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+[2026-02-14T21:00:54.321+0000] {subprocess.py:93} INFO -     sock.connect(sa)
+[2026-02-14T21:00:54.321+0000] {subprocess.py:93} INFO - OSError: [Errno 113] No route to host
+[2026-02-14T21:00:54.321+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.321+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
+[2026-02-14T21:00:54.321+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.322+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-14T21:00:54.322+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 791, in urlopen
+[2026-02-14T21:00:54.322+0000] {subprocess.py:93} INFO -     response = self._make_request(
+[2026-02-14T21:00:54.322+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.323+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 492, in _make_request
+[2026-02-14T21:00:54.323+0000] {subprocess.py:93} INFO -     raise new_e
+[2026-02-14T21:00:54.323+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 468, in _make_request
+[2026-02-14T21:00:54.323+0000] {subprocess.py:93} INFO -     self._validate_conn(conn)
+[2026-02-14T21:00:54.324+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1097, in _validate_conn
+[2026-02-14T21:00:54.324+0000] {subprocess.py:93} INFO -     conn.connect()
+[2026-02-14T21:00:54.324+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 611, in connect
+[2026-02-14T21:00:54.324+0000] {subprocess.py:93} INFO -     self.sock = sock = self._new_conn()
+[2026-02-14T21:00:54.324+0000] {subprocess.py:93} INFO -                        ^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.325+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 218, in _new_conn
+[2026-02-14T21:00:54.325+0000] {subprocess.py:93} INFO -     raise NewConnectionError(
+[2026-02-14T21:00:54.325+0000] {subprocess.py:93} INFO - urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPSConnection object at 0x7bee75ede250>: Failed to establish a new connection: [Errno 113] No route to host
+[2026-02-14T21:00:54.325+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.326+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
+[2026-02-14T21:00:54.326+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.326+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-14T21:00:54.326+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 542, in _raw_request
+[2026-02-14T21:00:54.327+0000] {subprocess.py:93} INFO -     response = self.http.request(method, url, **kwargs)
+[2026-02-14T21:00:54.327+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.327+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/_request_methods.py", line 118, in request
+[2026-02-14T21:00:54.327+0000] {subprocess.py:93} INFO -     return self.request_encode_body(
+[2026-02-14T21:00:54.327+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.328+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/_request_methods.py", line 217, in request_encode_body
+[2026-02-14T21:00:54.328+0000] {subprocess.py:93} INFO -     return self.urlopen(method, url, **extra_kw)
+[2026-02-14T21:00:54.328+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.328+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/poolmanager.py", line 443, in urlopen
+[2026-02-14T21:00:54.329+0000] {subprocess.py:93} INFO -     response = conn.urlopen(method, u.request_uri, **kw)
+[2026-02-14T21:00:54.329+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.329+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 875, in urlopen
+[2026-02-14T21:00:54.329+0000] {subprocess.py:93} INFO -     return self.urlopen(
+[2026-02-14T21:00:54.329+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^
+[2026-02-14T21:00:54.330+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 845, in urlopen
+[2026-02-14T21:00:54.330+0000] {subprocess.py:93} INFO -     retries = retries.increment(
+[2026-02-14T21:00:54.330+0000] {subprocess.py:93} INFO -               ^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.330+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/retry.py", line 515, in increment
+[2026-02-14T21:00:54.331+0000] {subprocess.py:93} INFO -     raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+[2026-02-14T21:00:54.331+0000] {subprocess.py:93} INFO -     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.331+0000] {subprocess.py:93} INFO - urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='ch-prod-green.callcourier.com.pk', port=443): Max retries exceeded with url: /?query_id=6d6da9bd-5e39-4eaa-8694-79dbfa08cc95 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7bee75ede250>: Failed to establish a new connection: [Errno 113] No route to host'))
+[2026-02-14T21:00:54.331+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.331+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
+[2026-02-14T21:00:54.332+0000] {subprocess.py:93} INFO - 
+[2026-02-14T21:00:54.332+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-14T21:00:54.332+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
+[2026-02-14T21:00:54.332+0000] {subprocess.py:93} INFO -     App().run()
+[2026-02-14T21:00:54.332+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 287, in run
+[2026-02-14T21:00:54.333+0000] {subprocess.py:93} INFO -     ch_tables = ClickHouseClient(config).fetch_tables()
+[2026-02-14T21:00:54.333+0000] {subprocess.py:93} INFO -                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.333+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 114, in __init__
+[2026-02-14T21:00:54.333+0000] {subprocess.py:93} INFO -     self.client = clickhouse_connect.get_client(
+[2026-02-14T21:00:54.334+0000] {subprocess.py:93} INFO -                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.334+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/__init__.py", line 130, in create_client
+[2026-02-14T21:00:54.334+0000] {subprocess.py:93} INFO -     return HttpClient(interface, host, port, username, password, database, access_token,
+[2026-02-14T21:00:54.334+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.335+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 182, in __init__
+[2026-02-14T21:00:54.335+0000] {subprocess.py:93} INFO -     super().__init__(database=database,
+[2026-02-14T21:00:54.335+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/client.py", line 99, in __init__
+[2026-02-14T21:00:54.335+0000] {subprocess.py:93} INFO -     self._init_common_settings(apply_server_timezone)
+[2026-02-14T21:00:54.335+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/client.py", line 104, in _init_common_settings
+[2026-02-14T21:00:54.336+0000] {subprocess.py:93} INFO -     tuple(self.command('SELECT version(), timezone()', use_database=False))
+[2026-02-14T21:00:54.336+0000] {subprocess.py:93} INFO -           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.336+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 428, in command
+[2026-02-14T21:00:54.336+0000] {subprocess.py:93} INFO -     response = self._raw_request(payload, params, headers, method, fields=fields, server_wait=False)
+[2026-02-14T21:00:54.336+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-14T21:00:54.337+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 554, in _raw_request
+[2026-02-14T21:00:54.337+0000] {subprocess.py:93} INFO -     raise OperationalError(f'Error {ex} executing HTTP request attempt {attempts}{err_url}') from ex
+[2026-02-14T21:00:54.337+0000] {subprocess.py:93} INFO - clickhouse_connect.driver.exceptions.OperationalError: Error HTTPSConnectionPool(host='ch-prod-green.callcourier.com.pk', port=443): Max retries exceeded with url: /?query_id=6d6da9bd-5e39-4eaa-8694-79dbfa08cc95 (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7bee75ede250>: Failed to establish a new connection: [Errno 113] No route to host')) executing HTTP request attempt 1 (https://ch-prod-green.callcourier.com.pk:443)
+[2026-02-14T21:00:54.450+0000] {subprocess.py:97} INFO - Command exited with return code 1
+[2026-02-14T21:00:54.467+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
+[2026-02-14T21:00:54.472+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260214T204500, start_date=20260214T210001, end_date=20260214T210054
+[2026-02-14T21:00:54.491+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 250 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 47673)
+[2026-02-14T21:00:54.509+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-02-14T21:00:54.529+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

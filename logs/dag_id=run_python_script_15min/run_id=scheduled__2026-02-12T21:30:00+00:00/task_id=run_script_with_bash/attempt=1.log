@@ -1,0 +1,117 @@
+[2026-02-12T21:45:01.010+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-12T21:30:00+00:00 [queued]>
+[2026-02-12T21:45:01.022+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-12T21:30:00+00:00 [queued]>
+[2026-02-12T21:45:01.022+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-02-12T21:45:01.036+0000] {taskinstance.py:2191} INFO - Executing <Task(BashOperator): run_script_with_bash> on 2026-02-12 21:30:00+00:00
+[2026-02-12T21:45:01.043+0000] {standard_task_runner.py:60} INFO - Started process 13681 to run task
+[2026-02-12T21:45:01.049+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'run_python_script_15min', 'run_script_with_bash', 'scheduled__2026-02-12T21:30:00+00:00', '--job-id', '45', '--raw', '--subdir', 'DAGS_FOLDER/check_lag_dag.py', '--cfg-path', '/tmp/tmph5vz9qeb']
+[2026-02-12T21:45:01.053+0000] {standard_task_runner.py:88} INFO - Job 45: Subtask run_script_with_bash
+[2026-02-12T21:45:01.124+0000] {task_command.py:423} INFO - Running <TaskInstance: run_python_script_15min.run_script_with_bash scheduled__2026-02-12T21:30:00+00:00 [running]> on host 605a2f14a00a
+[2026-02-12T21:45:01.232+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='run_python_script_15min' AIRFLOW_CTX_TASK_ID='run_script_with_bash' AIRFLOW_CTX_EXECUTION_DATE='2026-02-12T21:30:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-02-12T21:30:00+00:00'
+[2026-02-12T21:45:01.233+0000] {subprocess.py:63} INFO - Tmp dir root location: /tmp
+[2026-02-12T21:45:01.234+0000] {subprocess.py:75} INFO - Running command: ['/usr/bin/bash', '-c', 'cd /opt/***/scripts && pip install -q -r requirements.txt && python script.py']
+[2026-02-12T21:45:01.248+0000] {subprocess.py:86} INFO - Output:
+[2026-02-12T21:45:05.489+0000] {subprocess.py:93} INFO - 
+[2026-02-12T21:45:05.490+0000] {subprocess.py:93} INFO - [notice] A new release of pip is available: 23.3.2 -> 26.0.1
+[2026-02-12T21:45:05.490+0000] {subprocess.py:93} INFO - [notice] To update, run: python -m pip install --upgrade pip
+[2026-02-12T21:45:06.617+0000] {subprocess.py:93} INFO - 2026-02-12 21:45:06,617 | INFO     | Running for 🔵 Blue Environment
+[2026-02-12T21:45:16.778+0000] {subprocess.py:93} INFO - 2026-02-12 21:45:16,778 | WARNING  | Unexpected Http Driver Exception
+[2026-02-12T21:45:16.779+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-12T21:45:16.779+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 468, in _make_request
+[2026-02-12T21:45:16.780+0000] {subprocess.py:93} INFO -     self._validate_conn(conn)
+[2026-02-12T21:45:16.780+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 1097, in _validate_conn
+[2026-02-12T21:45:16.780+0000] {subprocess.py:93} INFO -     conn.connect()
+[2026-02-12T21:45:16.781+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 642, in connect
+[2026-02-12T21:45:16.781+0000] {subprocess.py:93} INFO -     sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+[2026-02-12T21:45:16.781+0000] {subprocess.py:93} INFO -                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.781+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connection.py", line 783, in _ssl_wrap_socket_and_match_hostname
+[2026-02-12T21:45:16.782+0000] {subprocess.py:93} INFO -     ssl_sock = ssl_wrap_socket(
+[2026-02-12T21:45:16.782+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.782+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 471, in ssl_wrap_socket
+[2026-02-12T21:45:16.782+0000] {subprocess.py:93} INFO -     ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+[2026-02-12T21:45:16.782+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.783+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/ssl_.py", line 515, in _ssl_wrap_socket_impl
+[2026-02-12T21:45:16.783+0000] {subprocess.py:93} INFO -     return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+[2026-02-12T21:45:16.783+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.783+0000] {subprocess.py:93} INFO -   File "/usr/local/lib/python3.11/ssl.py", line 517, in wrap_socket
+[2026-02-12T21:45:16.784+0000] {subprocess.py:93} INFO -     return self.sslsocket_class._create(
+[2026-02-12T21:45:16.784+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.784+0000] {subprocess.py:93} INFO -   File "/usr/local/lib/python3.11/ssl.py", line 1104, in _create
+[2026-02-12T21:45:16.784+0000] {subprocess.py:93} INFO -     self.do_handshake()
+[2026-02-12T21:45:16.784+0000] {subprocess.py:93} INFO -   File "/usr/local/lib/python3.11/ssl.py", line 1382, in do_handshake
+[2026-02-12T21:45:16.785+0000] {subprocess.py:93} INFO -     self._sslobj.do_handshake()
+[2026-02-12T21:45:16.785+0000] {subprocess.py:93} INFO - TimeoutError: _ssl.c:989: The handshake operation timed out
+[2026-02-12T21:45:16.785+0000] {subprocess.py:93} INFO - 
+[2026-02-12T21:45:16.785+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
+[2026-02-12T21:45:16.785+0000] {subprocess.py:93} INFO - 
+[2026-02-12T21:45:16.786+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-12T21:45:16.786+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 542, in _raw_request
+[2026-02-12T21:45:16.786+0000] {subprocess.py:93} INFO -     response = self.http.request(method, url, **kwargs)
+[2026-02-12T21:45:16.786+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.787+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/_request_methods.py", line 118, in request
+[2026-02-12T21:45:16.787+0000] {subprocess.py:93} INFO -     return self.request_encode_body(
+[2026-02-12T21:45:16.787+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.787+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/_request_methods.py", line 217, in request_encode_body
+[2026-02-12T21:45:16.788+0000] {subprocess.py:93} INFO -     return self.urlopen(method, url, **extra_kw)
+[2026-02-12T21:45:16.788+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.788+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/poolmanager.py", line 443, in urlopen
+[2026-02-12T21:45:16.788+0000] {subprocess.py:93} INFO -     response = conn.urlopen(method, u.request_uri, **kw)
+[2026-02-12T21:45:16.789+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.789+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 845, in urlopen
+[2026-02-12T21:45:16.789+0000] {subprocess.py:93} INFO -     retries = retries.increment(
+[2026-02-12T21:45:16.789+0000] {subprocess.py:93} INFO -               ^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.790+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/retry.py", line 470, in increment
+[2026-02-12T21:45:16.790+0000] {subprocess.py:93} INFO -     raise reraise(type(error), error, _stacktrace)
+[2026-02-12T21:45:16.790+0000] {subprocess.py:93} INFO -           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.790+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/util/util.py", line 39, in reraise
+[2026-02-12T21:45:16.791+0000] {subprocess.py:93} INFO -     raise value
+[2026-02-12T21:45:16.791+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 791, in urlopen
+[2026-02-12T21:45:16.791+0000] {subprocess.py:93} INFO -     response = self._make_request(
+[2026-02-12T21:45:16.791+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.792+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 492, in _make_request
+[2026-02-12T21:45:16.792+0000] {subprocess.py:93} INFO -     raise new_e
+[2026-02-12T21:45:16.792+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 470, in _make_request
+[2026-02-12T21:45:16.792+0000] {subprocess.py:93} INFO -     self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)
+[2026-02-12T21:45:16.793+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 371, in _raise_timeout
+[2026-02-12T21:45:16.793+0000] {subprocess.py:93} INFO -     raise ReadTimeoutError(
+[2026-02-12T21:45:16.793+0000] {subprocess.py:93} INFO - urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='ch-new.callcourier.com.pk', port=443): Read timed out. (read timeout=10)
+[2026-02-12T21:45:16.794+0000] {subprocess.py:93} INFO - 
+[2026-02-12T21:45:16.794+0000] {subprocess.py:93} INFO - The above exception was the direct cause of the following exception:
+[2026-02-12T21:45:16.794+0000] {subprocess.py:93} INFO - 
+[2026-02-12T21:45:16.794+0000] {subprocess.py:93} INFO - Traceback (most recent call last):
+[2026-02-12T21:45:16.795+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 302, in <module>
+[2026-02-12T21:45:16.795+0000] {subprocess.py:93} INFO -     App().run()
+[2026-02-12T21:45:16.795+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 287, in run
+[2026-02-12T21:45:16.796+0000] {subprocess.py:93} INFO -     ch_tables = ClickHouseClient(config).fetch_tables()
+[2026-02-12T21:45:16.796+0000] {subprocess.py:93} INFO -                 ^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.796+0000] {subprocess.py:93} INFO -   File "/opt/***/scripts/script.py", line 114, in __init__
+[2026-02-12T21:45:16.796+0000] {subprocess.py:93} INFO -     self.client = clickhouse_connect.get_client(
+[2026-02-12T21:45:16.797+0000] {subprocess.py:93} INFO -                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.797+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/__init__.py", line 130, in create_client
+[2026-02-12T21:45:16.797+0000] {subprocess.py:93} INFO -     return HttpClient(interface, host, port, username, password, database, access_token,
+[2026-02-12T21:45:16.797+0000] {subprocess.py:93} INFO -            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.797+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 182, in __init__
+[2026-02-12T21:45:16.798+0000] {subprocess.py:93} INFO -     super().__init__(database=database,
+[2026-02-12T21:45:16.798+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/client.py", line 99, in __init__
+[2026-02-12T21:45:16.798+0000] {subprocess.py:93} INFO -     self._init_common_settings(apply_server_timezone)
+[2026-02-12T21:45:16.798+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/client.py", line 104, in _init_common_settings
+[2026-02-12T21:45:16.799+0000] {subprocess.py:93} INFO -     tuple(self.command('SELECT version(), timezone()', use_database=False))
+[2026-02-12T21:45:16.799+0000] {subprocess.py:93} INFO -           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.799+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 428, in command
+[2026-02-12T21:45:16.799+0000] {subprocess.py:93} INFO -     response = self._raw_request(payload, params, headers, method, fields=fields, server_wait=False)
+[2026-02-12T21:45:16.800+0000] {subprocess.py:93} INFO -                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[2026-02-12T21:45:16.800+0000] {subprocess.py:93} INFO -   File "/home/***/.local/lib/python3.11/site-packages/clickhouse_connect/driver/httpclient.py", line 554, in _raw_request
+[2026-02-12T21:45:16.800+0000] {subprocess.py:93} INFO -     raise OperationalError(f'Error {ex} executing HTTP request attempt {attempts}{err_url}') from ex
+[2026-02-12T21:45:16.800+0000] {subprocess.py:93} INFO - clickhouse_connect.driver.exceptions.OperationalError: Error HTTPSConnectionPool(host='ch-new.callcourier.com.pk', port=443): Read timed out. (read timeout=10) executing HTTP request attempt 1 (https://ch-new.callcourier.com.pk:443)
+[2026-02-12T21:45:16.897+0000] {subprocess.py:97} INFO - Command exited with return code 1
+[2026-02-12T21:45:16.913+0000] {taskinstance.py:2698} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/models/taskinstance.py", line 433, in _execute_task
+    result = execute_callable(context=context, **execute_callable_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/airflow/.local/lib/python3.11/site-packages/airflow/operators/bash.py", line 212, in execute
+    raise AirflowException(
+airflow.exceptions.AirflowException: Bash command failed. The command returned a non-zero exit code 1.
+[2026-02-12T21:45:16.918+0000] {taskinstance.py:1138} INFO - Marking task as UP_FOR_RETRY. dag_id=run_python_script_15min, task_id=run_script_with_bash, execution_date=20260212T213000, start_date=20260212T214501, end_date=20260212T214516
+[2026-02-12T21:45:16.934+0000] {standard_task_runner.py:107} ERROR - Failed to execute job 45 for task run_script_with_bash (Bash command failed. The command returned a non-zero exit code 1.; 13681)
+[2026-02-12T21:45:16.943+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 1
+[2026-02-12T21:45:16.962+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check
