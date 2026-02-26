@@ -9,7 +9,8 @@ import clickhouse_connect
 from dotenv import load_dotenv
 from tqdm import tqdm
 import requests
-import time
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # ======================================================
 # Paths
@@ -25,15 +26,15 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 THRESHOLD_FILE = os.path.join(INPUT_DIR, "threshold.xlsx")
 
 # ======================================================
-# ClickHouse Environments
+# ClickHouse Environments (Green → Blue → Yellow)
 # ======================================================
 CLICKHOUSE_ENVIRONMENTS = {
-    "🔵 Blue Environment": {
-        "host": "ch-new.callcourier.com.pk",
-        "port": 443,
-    },
     "🟢 Green Environment": {
         "host": "ch-prod-green.callcourier.com.pk",
+        "port": 443,
+    },
+    "🔵 Blue Environment": {
+        "host": "ch-new.callcourier.com.pk",
         "port": 443,
     },
     "🟡 Yellow Environment": {
@@ -52,6 +53,9 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 WEBHOOK_URL = "https://chat.googleapis.com/v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c"
 
+# Asia/Karachi Timezone
+PKT = ZoneInfo("Asia/Karachi")
+
 # ======================================================
 # Logging
 # ======================================================
@@ -69,7 +73,7 @@ class Config:
         "HRM": "HRM",
         "GoGreen": "GG",
         "Cloud_GoGreen": "CGG",
-        "SharedObject" : "SO",
+        "SharedObject": "SO",
     }
 
     def __init__(self, ch_host, ch_port):
@@ -116,7 +120,17 @@ class ClickHouseClient:
             **self.cfg, secure=False, verify=False
         )
 
+    def _get_table_engines(self):
+        """Returns a dict of {table_name_lower: engine_name}."""
+        rows = self.client.query(
+            "SELECT name, engine FROM system.tables WHERE database = %(db)s",
+            parameters={"db": self.cfg["database"]},
+        ).result_rows
+        return {name.lower(): engine for name, engine in rows}
+
     def fetch_tables(self):
+        engines = self._get_table_engines()
+
         rows = self.client.query(
             "SELECT name FROM system.tables WHERE database = %(db)s",
             parameters={"db": self.cfg["database"]},
@@ -128,10 +142,25 @@ class ClickHouseClient:
             if t.endswith(("_kafka", "_mv")) or t.startswith("vw_"):
                 continue
 
+            engine = engines.get(t, "")
+
+            # Read engine from ClickHouse schema:
+            # - ReplacingMergeTree → use FINAL (deduplication required)
+            # - MergeTree or anything else → no FINAL
+            use_final = engine.lower() == "replacingmergetree"
+
             try:
-                cnt = self.client.query(
-                    f"SELECT count() FROM {self.cfg['database']}.{name} FINAL WHERE __deleted='false'"
-                ).result_rows[0][0]
+                if use_final:
+                    query = (
+                        f"SELECT count() FROM {self.cfg['database']}.{name} "
+                        f"FINAL WHERE __deleted='false'"
+                    )
+                else:
+                    query = (
+                        f"SELECT count() FROM {self.cfg['database']}.{name} "
+                        f"WHERE __deleted='false'"
+                    )
+                cnt = self.client.query(query).result_rows[0][0]
             except Exception:
                 cnt = 0
 
@@ -231,9 +260,11 @@ class ReportWriter:
 # Google Chat Alert
 # ======================================================
 def send_google_chat_alert(env_results, thresholds):
-    now = time.strftime("%Y-%m-%d %H:%M:%S")
+    # Current time in Asia/Karachi timezone, 12-hour format
+    now = datetime.now(PKT).strftime("%Y-%m-%d %I:%M:%S %p PKT")
+
     sections = []
-    has_any_alert = False   # 👈 track if ANY env has breach
+    has_any_alert = False
 
     for env, mismatches in env_results.items():
         lines = []
@@ -243,7 +274,7 @@ def send_google_chat_alert(env_results, thresholds):
             lag = abs(m["diff"])
 
             if t in thresholds and lag > thresholds[t]:
-                has_any_alert = True  # 👈 at least one breach found
+                has_any_alert = True
                 lines.append(
                     f"🚨 `{t}` | "
                     f"SQL: {m['sql']} | "
@@ -257,20 +288,28 @@ def send_google_chat_alert(env_results, thresholds):
         else:
             sections.append(f"*{env}*\n✅ No tables exceeded thresholds")
 
-    # 🚫 If BOTH environments are healthy → NO alert
     if not has_any_alert:
         logger.info("All environments are within thresholds. Google Chat alert skipped.")
         return
 
-    payload = {
-        "text": (
-            f"📊 *SQL Server ↔ ClickHouse Lag Alert*\n"
-            f"🕒 Time: {now}\n\n"
-            + "\n\n".join(sections)
-        )
-    }
+    message_text = (
+        f"📊 *SQL Server ↔ ClickHouse Lag Alert*\n"
+        f"🕒 Time: {now}\n\n"
+        + "\n\n".join(sections)
+    )
+
+    payload = {"text": message_text}
+
+    # Print full Google Chat message to logs before sending
+    logger.info("=" * 60)
+    logger.info("📤 GOOGLE CHAT MESSAGE PREVIEW:")
+    logger.info("=" * 60)
+    for line in message_text.splitlines():
+        logger.info(line)
+    logger.info("=" * 60)
 
     requests.post(WEBHOOK_URL, json=payload)
+    logger.info("✅ Google Chat alert sent successfully.")
 
 
 # ======================================================
