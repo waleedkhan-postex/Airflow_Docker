@@ -18,10 +18,10 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    'run_python_script_15min',
+    'run_python_script_1hour',          # Updated DAG name
     default_args=default_args,
-    description='Run external Python script every 15 minutes',
-    schedule_interval='*/15 * * * *',  # Every 15 minutes
+    description='Run external Python script every 1 hour',
+    schedule_interval='0 * * * *',      # Changed from */15 to every hour
     catchup=False,
     tags=['python', 'script'],
 )
