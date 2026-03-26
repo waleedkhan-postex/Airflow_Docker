@@ -68,7 +68,7 @@ urllib3.disable_warnings()
 ssl._create_default_https_context = ssl._create_unverified_context
 
 WEBHOOK_URL = "https://chat.googleapis.com/v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c"
-
+WEBHOOK_URL = ""
 # Asia/Karachi Timezone
 PKT = ZoneInfo("Asia/Karachi")
 
