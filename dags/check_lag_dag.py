@@ -18,10 +18,10 @@ default_args = {
 
 # Define the DAG
 dag = DAG(
-    'run_python_script_1hour',          # Updated DAG name
+    'run_python_script_1hour',
     default_args=default_args,
     description='Run external Python script every 1 hour',
-    schedule_interval='0 * * * *',      # Changed from */15 to every hour
+    schedule='0 * * * *',              # ← was schedule_interval, removed in Airflow 3.x
     catchup=False,
     tags=['python', 'script'],
 )
