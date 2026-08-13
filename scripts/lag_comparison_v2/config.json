@@ -1,0 +1,8 @@
+{
+  "size_thresholds": [
+    { "name": "Small", "max_rows": 10000, "lag_limit": 50 },
+    { "name": "Medium", "max_rows": 100000, "lag_limit": 200 },
+    { "name": "Large", "max_rows": 1000000, "lag_limit": 2000 },
+    { "name": "XLarge", "max_rows": null, "lag_limit": 10000 }
+  ]
+}

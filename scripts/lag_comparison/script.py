@@ -2,12 +2,12 @@ import os
 import ssl
 import warnings
 import logging
+import sys
 import urllib3
 import pandas as pd
 import pyodbc
 import clickhouse_connect
 from dotenv import load_dotenv
-from tqdm import tqdm
 import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -19,12 +19,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 INPUT_DIR = os.path.join(BASE_DIR, "input")
-OUTPUT_DIR = os.path.join(BASE_DIR, "output", "files")
-
-os.makedirs(INPUT_DIR, exist_ok=True)
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-
 THRESHOLD_FILE = os.path.join(INPUT_DIR, "threshold.xlsx")
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # ======================================================
 # ClickHouse Environments (Green → Blue → Yellow)
@@ -58,6 +54,7 @@ CH_TABLE_WORKERS = (os.cpu_count() or 4) * 2
 
 # SQL Server: parallel connections, one per configured database
 SQL_DB_WORKERS = 8
+PROGRESS_LOG_EVERY = 25
 
 # ======================================================
 # Global Settings
@@ -67,7 +64,11 @@ warnings.filterwarnings("ignore")
 urllib3.disable_warnings()
 ssl._create_default_https_context = ssl._create_unverified_context
 
-WEBHOOK_URL = "https://chat.googleapis.com/v1/spaces/AAQApfkBULA/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=Nu0VBpFNvrb-xpzbVrwlyW9bpDaSxt5kRQQ_JgrrJ7c"
+WEBHOOK_URL = (
+    os.getenv("GOOGLE_CHAT_WEBHOOK_URL")
+    or os.getenv("GOOGLE_CHAT_WEBHOOK_V2_URL")
+    or ""
+).strip()
 
 # Asia/Karachi Timezone
 PKT = ZoneInfo("Asia/Karachi")
@@ -78,8 +79,18 @@ PKT = ZoneInfo("Asia/Karachi")
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)-8s | %(message)s",
+    force=True,
+    stream=sys.stdout,
 )
 logger = logging.getLogger("SQL_CH_COMPARE")
+
+
+def log_table_progress(label: str, done: int, total: int) -> None:
+    if total <= 0:
+        return
+    pct = int(100 * done / total)
+    if done == 1 or done == total or done % PROGRESS_LOG_EVERY == 0:
+        logger.info("%s — %d/%d tables (%d%%)", label, done, total, pct)
 
 # ======================================================
 # Config
@@ -93,7 +104,6 @@ class Config:
     }
 
     def __init__(self, ch_host, ch_port):
-        load_dotenv()
         self.clickhouse = {
             "host": ch_host,
             "port": ch_port,
@@ -187,10 +197,9 @@ class ClickHouseClient:
                 pass
         return name.lower(), cnt
 
-    def fetch_tables(self) -> dict[str, int]:
+    def fetch_tables(self, label: str | None = None) -> dict[str, int]:
         engines = self._get_table_engines()
 
-        # Build work list — identical filtering logic to the original
         rows = self._meta_client.query(
             "SELECT name FROM system.tables WHERE database = %(db)s",
             parameters={"db": self.cfg["database"]},
@@ -205,6 +214,7 @@ class ClickHouseClient:
             use_final = engine.lower() == "replacingmergetree"
             work.append((name, use_final))
 
+        progress_label = label or f"CH [{self.cfg['host'].split('.')[0]}]"
         data: dict[str, int] = {}
 
         with ThreadPoolExecutor(max_workers=CH_TABLE_WORKERS) as pool:
@@ -212,15 +222,14 @@ class ClickHouseClient:
                 pool.submit(self._count_one_table, name, use_final): name
                 for name, use_final in work
             }
-            with tqdm(
-                total=len(futures),
-                desc=f"CH [{self.cfg['host'].split('.')[0]}]",
-                leave=False,
-            ) as pbar:
-                for fut in as_completed(futures):
-                    t_name, cnt = fut.result()
-                    data[t_name] = cnt
-                    pbar.update(1)
+            done = 0
+            total = len(futures)
+            logger.info("%s — counting %d table(s)…", progress_label, total)
+            for fut in as_completed(futures):
+                t_name, cnt = fut.result()
+                data[t_name] = cnt
+                done += 1
+                log_table_progress(progress_label, done, total)
 
         return data
 
@@ -315,29 +324,6 @@ class TableComparator:
         return mismatches
 
 # ======================================================
-# CSV Writer (per env)
-# ======================================================
-class ReportWriter:
-    @staticmethod
-    def write(env_name: str, mismatches: list[dict]):
-        if not mismatches:
-            return
-
-        safe_env = (
-            env_name.lower()
-            .replace(" ", "_")
-            .replace("🔵", "")
-            .replace("🟢", "")
-            .replace("🟡", "")
-            .strip()
-        )
-
-        df = pd.DataFrame(mismatches).sort_values("diff", ascending=False)
-        path = os.path.join(OUTPUT_DIR, f"table_comparison_{safe_env}.csv")
-        df.to_csv(path, index=False)
-        logger.info(f"CSV written: {path}")
-
-# ======================================================
 # Google Chat Alert
 # ======================================================
 def send_google_chat_alert(env_results: dict, thresholds: dict):
@@ -410,9 +396,8 @@ def _run_env(
     logger.info(f"▶ Starting CH fetch: {env_name}")
     config = Config(env_cfg["host"], env_cfg["port"])
 
-    ch_tables = ClickHouseClient(config).fetch_tables()
+    ch_tables = ClickHouseClient(config).fetch_tables(label=env_name)
     mismatches = TableComparator(config, sql_tables, ch_tables).compare()
-    ReportWriter.write(env_name, mismatches)
 
     logger.info(f"✔ Done: {env_name} — {len(mismatches)} mismatch(es)")
     return env_name, mismatches

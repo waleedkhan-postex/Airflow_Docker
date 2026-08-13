@@ -14,17 +14,17 @@ default_args = {
 }
 
 with DAG(
-    dag_id="run_python_script_1hour",
+    dag_id="lag_comparison_v2_hourly",
     default_args=default_args,
-    description="Run lag comparison v1 script every hour",
-    schedule="0 * * * *",
+    description="Hourly SQL Server vs ClickHouse LOGISTICS_V2 lag comparison (*_l2 tables)",
+    schedule="@hourly",
     catchup=False,
-    tags=["python", "script", "lag", "v1"],
+    tags=["clickhouse", "sqlserver", "lag", "v2", "lag_comparison_v2"],
 ) as dag:
     BashOperator(
-        task_id="run_script_with_bash",
+        task_id="run_lag_comparison_v2",
         bash_command=(
-            "cd /opt/airflow/scripts/lag_comparison && "
+            "cd /opt/airflow/scripts/lag_comparison_v2 && "
             "pip install -q -r requirements.txt && "
             "python -u script.py"
         ),

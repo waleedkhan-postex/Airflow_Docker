@@ -1,0 +1,5 @@
+clickhouse-connect
+pyodbc
+pandas
+python-dotenv
+requests
