@@ -10,22 +10,22 @@ default_args = {
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
-    "retry_delay": timedelta(minutes=5),
+    "retry_delay": timedelta(minutes=2),
 }
 
 with DAG(
-    dag_id="run_python_script_1hour",
+    dag_id="kafka_exception_whatsapp_alert",
     default_args=default_args,
-    description="Run lag comparison v1 script every hour",
-    schedule="0 * * * *",
+    description="Hourly ClickHouse kafka exception digest — one WhatsApp per environment",
+    schedule="@hourly",
     catchup=False,
-    tags=["python", "script", "lag", "v1"],
+    tags=["clickhouse", "kafka", "whatsapp", "exceptions"],
 ) as dag:
     BashOperator(
-        task_id="run_script_with_bash",
+        task_id="check_exceptions_and_alert",
         bash_command=(
-            "cd /opt/airflow/scripts/lag_comparison && "
+            "cd /opt/airflow/scripts/exception_monitor && "
             "pip install -q -r requirements.txt && "
-            "python -u script.py"
+            "python -u monitor.py"
         ),
     )

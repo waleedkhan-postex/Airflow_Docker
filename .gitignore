@@ -8,10 +8,10 @@ docker-compose.override.yml
 # =========================
 # Airflow generated files
 # =========================
-logs/                  # Airflow logs (runtime)
-*.db                   # SQLite database files
-*.db-journal           # SQLite journal files
-airflow.cfg            # Optional if generated, keep in repo if customized
+logs/
+*.db
+*.db-journal
+airflow.cfg
 
 # =========================
 # Python artifacts
@@ -20,13 +20,15 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-*.env                  # Environment variables (secrets)
-.venv/                 # Local virtual environments
+.env
+*.env
+**/.env
+.venv/
 
 # =========================
 # Editor / OS files
 # =========================
-*.swp                  # Swap files from Vim or similar editors
+*.swp
 .DS_Store
 Thumbs.db
 
@@ -35,3 +37,9 @@ Thumbs.db
 # =========================
 dags/__pycache__/
 plugins/__pycache__/
+
+# =========================
+# Script secrets & runtime state
+# =========================
+scripts/**/.env
+scripts/exception_monitor/alerted_exceptions.json

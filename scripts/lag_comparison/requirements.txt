@@ -2,5 +2,4 @@ clickhouse-connect
 pyodbc
 pandas
 python-dotenv
-tqdm
 openpyxl
