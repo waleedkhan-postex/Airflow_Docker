@@ -18,9 +18,11 @@ from dotenv import load_dotenv
 # Paths
 # ======================================================
 BASE_DIR = Path(__file__).resolve().parent
+SCRIPTS_DIR = BASE_DIR.parent
 STATE_FILE = BASE_DIR / "alerted_exceptions.json"
 
-load_dotenv(BASE_DIR / ".env")
+# Shared secrets for all scripts: scripts/.env
+load_dotenv(SCRIPTS_DIR / ".env")
 
 # ======================================================
 # Global Settings
@@ -345,7 +347,7 @@ def send_whatsapp(
             logger.error(
                 "[%s] WhatsApp destination group NOT registered on gateway "
                 "(destination-group=%r). Add a matching key to Lambda DESTINATION_GROUPS "
-                "or fix WHATSAPP_GROUP_NAME in .env. "
+                "or fix WHATSAPP_GROUP_NAME in scripts/.env. "
                 "Stopping further WhatsApp attempts this run.",
                 environment,
                 dest_group,

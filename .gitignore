@@ -41,5 +41,7 @@ plugins/__pycache__/
 # =========================
 # Script secrets & runtime state
 # =========================
+# Shared secrets: scripts/.env (also matched by **/.env above)
+scripts/.env
 scripts/**/.env
 scripts/exception_monitor/alerted_exceptions.json
