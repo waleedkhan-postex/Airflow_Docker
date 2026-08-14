@@ -18,8 +18,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Paths
 # ======================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCRIPTS_DIR = os.path.dirname(BASE_DIR)
 CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+# Shared secrets for all scripts: scripts/.env
+load_dotenv(os.path.join(SCRIPTS_DIR, ".env"))
 
 # ======================================================
 # ClickHouse Environments (Green → Blue → Yellow)
