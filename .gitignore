@@ -20,9 +20,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.env
-*.env
-**/.env
 .venv/
 
 # =========================
@@ -39,7 +36,7 @@ dags/__pycache__/
 plugins/__pycache__/
 
 # =========================
-# Script secrets & runtime state
+# Script secrets & runtime state (root .env is tracked for compose)
 # =========================
 scripts/**/.env
 scripts/exception_monitor/alerted_exceptions.json
