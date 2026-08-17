@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import ssl
 import warnings
 import logging
@@ -51,7 +52,22 @@ PROGRESS_LOG_EVERY = 25  # emit a log line every N tables (Airflow-safe)
 
 # ClickHouse L2 replica table name suffix
 # SQL GoGreen.dbo.CNTrack → CH LOGISTICS_V2.GG_dbo_CNTrack_l2
+# (some tables use a versioned suffix, e.g. GG_dbo_CNTrack_l2_v1)
 CH_TABLE_SUFFIX = "_l2"
+L2_SUFFIX_RE = re.compile(r"_l2(?:_v\d+)?$", re.IGNORECASE)
+
+
+def is_l2_table(name: str) -> bool:
+    """True for *_l2 and versioned *_l2_vN (case-insensitive)."""
+    return bool(L2_SUFFIX_RE.search(name))
+
+
+def strip_l2_suffix(name: str) -> str | None:
+    """GG_dbo_CNTrack_l2_v1 → GG_dbo_CNTrack; None if not an L2 table."""
+    m = L2_SUFFIX_RE.search(name)
+    if not m:
+        return None
+    return name[: m.start()]
 
 # ======================================================
 # Global Settings
@@ -146,13 +162,13 @@ class SizeThresholdConfig:
 # ======================================================
 def parse_ch_table_name(ch_name: str) -> tuple[str, str, str] | None:
     """
-    Parse GG_dbo_CNTrack_l2 → (GoGreen, dbo, CNTrack).
+    Parse GG_dbo_CNTrack_l2 or GG_dbo_CNTrack_l2_v1 → (GoGreen, dbo, CNTrack).
     Schema is the first segment after the abbreviation; the rest is the table.
     """
-    if not ch_name.endswith(CH_TABLE_SUFFIX):
+    base = strip_l2_suffix(ch_name)
+    if base is None:
         return None
-    base = ch_name[: -len(CH_TABLE_SUFFIX)]
-    # Longest abbreviation first (CGG before GG is not needed by prefix, but HRM/GG/SO/CGG)
+    # Longest abbreviation first (CGG before GG)
     for abbr in sorted(Config.ABBR_TO_DATABASE.keys(), key=len, reverse=True):
         prefix = abbr + "_"
         if base.startswith(prefix):
@@ -165,6 +181,7 @@ def parse_ch_table_name(ch_name: str) -> tuple[str, str, str] | None:
 
 
 def ch_name_from_sql(database: str, schema: str, table: str) -> str | None:
+    """Default CH L2 name (unversioned *_l2). Prefer keeping the real CH name when known."""
     abbr = Config.DB_ABBREVIATION.get(database)
     if not abbr:
         return None
@@ -263,7 +280,7 @@ class ClickHouseClient:
         return name, int(cnt)
 
     def list_l2_tables(self) -> list[tuple[str, bool]]:
-        """Return [(table_name, use_final), ...] for *_l2 tables only."""
+        """Return [(table_name, use_final), ...] for *_l2 / *_l2_vN tables only."""
         engines = self._get_table_engines()
         rows = self._meta_client.query(
             "SELECT name FROM system.tables WHERE database = %(db)s",
@@ -273,7 +290,7 @@ class ClickHouseClient:
         work = []
         for (name,) in rows:
             t = name.lower()
-            if t.endswith(("_kafka", "_mv")) or t.startswith("vw_") or not t.endswith(CH_TABLE_SUFFIX):
+            if t.endswith(("_kafka", "_mv")) or t.startswith("vw_") or not is_l2_table(t):
                 continue
             engine = engines.get(t, "")
             use_final = engine.lower() == "replacingmergetree"
@@ -326,17 +343,18 @@ class SQLServerClient:
         )
 
     def _fetch_one_db(
-        self, db: str, wanted: set[tuple[str, str]]
+        self, db: str, wanted: dict[tuple[str, str], list[str]]
     ) -> dict[str, int]:
         """
         Fetch row counts for specific (schema, table) pairs in one MSSQL database.
+        wanted maps (schema, table) → list of ClickHouse table names to key the result.
         Returns {CH_table_name: sql_count}.
         """
         if not wanted:
             return {}
 
         # Build parameterized IN list of (schema, table)
-        pairs = sorted(wanted)
+        pairs = sorted(wanted.keys())
         placeholders = ",".join("(?, ?)" for _ in pairs)
         query = f"""
         SELECT s.name schema_name, t.name table_name, SUM(p.rows) row_count
@@ -363,17 +381,19 @@ class SQLServerClient:
 
         out: dict[str, int] = {}
         for _, r in df.iterrows():
-            ch_name = ch_name_from_sql(db, r["schema_name"], r["table_name"])
-            if ch_name:
-                out[ch_name] = int(r["row_count"])
+            key = (r["schema_name"], r["table_name"])
+            sql_count = int(r["row_count"])
+            for ch_name in wanted.get(key, []):
+                out[ch_name] = sql_count
         return out
 
     def fetch_for_ch_tables(self, ch_table_names: set[str]) -> dict[str, int]:
         """
         Resolve CH names to SQL db/schema/table and fetch only those counts.
-        Returns {CH_table_name: sql_count}.
+        Returns {CH_table_name: sql_count} keyed by the original CH names
+        (so GG_dbo_CNTrack_l2_v1 keeps its versioned key).
         """
-        by_db: dict[str, set[tuple[str, str]]] = {}
+        by_db: dict[str, dict[tuple[str, str], list[str]]] = {}
         for ch_name in ch_table_names:
             parsed = parse_ch_table_name(ch_name)
             if not parsed:
@@ -381,7 +401,7 @@ class SQLServerClient:
             db, schema, table = parsed
             if db not in self.cfg["databases"]:
                 continue
-            by_db.setdefault(db, set()).add((schema, table))
+            by_db.setdefault(db, {}).setdefault((schema, table), []).append(ch_name)
 
         all_counts: dict[str, int] = {}
         if not by_db:
@@ -540,7 +560,7 @@ class App:
 
         # ── STEP 1: ClickHouse first (all envs in parallel) ─────────────────
         logger.info("━" * 60)
-        logger.info("STEP 1 — Fetching ClickHouse *_l2 tables (3 envs simultaneously)…")
+        logger.info("STEP 1 — Fetching ClickHouse *_l2 / *_l2_vN tables (3 envs simultaneously)…")
         logger.info("━" * 60)
 
         env_ch: dict[str, dict[str, int]] = {}
@@ -563,7 +583,7 @@ class App:
         for tables in env_ch.values():
             ch_union.update(tables.keys())
 
-        logger.info(f"ClickHouse union — {len(ch_union)} unique *_l2 table(s).")
+        logger.info(f"ClickHouse union — {len(ch_union)} unique L2 table(s).")
 
         # ── STEP 2: SQL only for tables found in ClickHouse ─────────────────
         logger.info("━" * 60)
