@@ -29,7 +29,7 @@ load_dotenv(os.path.join(SCRIPTS_DIR, ".env"))
 # ======================================================
 CLICKHOUSE_ENVIRONMENTS = {
     "🟢 Green Environment": {
-        "host": "ch-prod-green.callcourier.com.pk--",
+        "host": "ch-prod-green.callcourier.com.pk",
         "port": 443,
     },
     "🔵 Blue Environment": {
@@ -37,7 +37,7 @@ CLICKHOUSE_ENVIRONMENTS = {
         "port": 443,
     },
     "🟡 Yellow Environment": {
-        "host": "ch-yellow.callcourier.com.pk--",
+        "host": "ch-yellow.callcourier.com.pk",
         "port": 443,
     },
 }
