@@ -464,41 +464,157 @@ class TableComparator:
         return mismatches
 
 # ======================================================
-# Google Chat Alert (one message per environment — avoids truncation)
+# Google Chat Alert (one combined message — all environments)
 # ======================================================
-MAX_ALERT_ROWS = 25
+GOOGLE_CHAT_MAX_BYTES = 32000
+
+PRIORITY_SQL_TABLES = [
+    ("GoGreen", "dbo", "CNTrack"),
+    ("GoGreen", "dbo", "Booking"),
+    ("GoGreen", "dbo", "ShipmentCollection"),
+    ("GoGreen", "dbo", "Couriersheet"),
+]
+PRIORITY_SQL_KEYS = {
+    (db.lower(), schema.lower(), table.lower())
+    for db, schema, table in PRIORITY_SQL_TABLES
+}
 
 
-def _format_env_alert(env: str, mismatches: list[dict], now: str) -> str | None:
-    lines = []
-    for m in sorted(mismatches, key=lambda x: -abs(x["diff"])):
-        lag = abs(m["diff"])
-        if lag <= m["lag_limit"]:
-            continue
-        lines.append(
-            f"🚨 `{m['table']}` | "
-            f"SQL: {m['sql']} | "
-            f"CH: {m['ch']} | "
-            f"Lag: {m['diff']} | "
-            f"Size: {m['size']} | "
-            f"Threshold: {m['lag_limit']}"
+def _sql_key_from_ch(ch_name: str) -> tuple[str, str, str] | None:
+    parsed = parse_ch_table_name(ch_name)
+    if not parsed:
+        return None
+    db, schema, table = parsed
+    return (db.lower(), schema.lower(), table.lower())
+
+
+def _is_priority(ch_name: str) -> bool:
+    key = _sql_key_from_ch(ch_name)
+    return key is not None and key in PRIORITY_SQL_KEYS
+
+
+def _exceeded(m: dict) -> bool:
+    return abs(m["diff"]) > m["lag_limit"]
+
+
+def _find_priority_row(mismatches: list[dict], sql_key: tuple[str, str, str]) -> dict | None:
+    matches = [m for m in mismatches if _sql_key_from_ch(m["table"]) == sql_key]
+    if not matches:
+        return None
+    matches.sort(key=lambda m: (not _exceeded(m), -abs(m["diff"])))
+    return matches[0]
+
+
+def _other_exceeded_by_env(env_results: dict) -> dict[str, list[dict]]:
+    out: dict[str, list[dict]] = {}
+    for env, mismatches in env_results.items():
+        rows = [
+            m for m in mismatches
+            if _exceeded(m) and not _is_priority(m["table"])
+        ]
+        rows.sort(key=lambda x: -abs(x["diff"]))
+        out[env] = rows
+    return out
+
+
+def _fmt_metrics(m: dict, compact: bool) -> str:
+    if compact:
+        return (
+            f"SQL {m['sql']:,} | CH {m['ch']:,} | Lag {m['diff']:,} | "
+            f"{m['size']} | Thr {m['lag_limit']:,}"
         )
+    return (
+        f"SQL: {m['sql']} | CH: {m['ch']} | Lag: {m['diff']} | "
+        f"Size: {m['size']} | Threshold: {m['lag_limit']}"
+    )
 
-    if not lines:
+
+def _build_alert_text(
+    env_results: dict,
+    now: str,
+    compact: bool,
+    other_by_env: dict[str, list[dict]] | None = None,
+) -> str:
+    if other_by_env is None:
+        other_by_env = _other_exceeded_by_env(env_results)
+
+    parts = [
+        "📊 *SQL Server ↔ ClickHouse Lag Alert (V2)*",
+        f"🕒 Time: {now}",
+        "",
+        "⭐ *PRIORITY TABLES*",
+    ]
+
+    for db, schema, table in PRIORITY_SQL_TABLES:
+        sql_key = (db.lower(), schema.lower(), table.lower())
+        parts.append(f"*⭐ {db}.{schema}.{table}*")
+        for env, mismatches in env_results.items():
+            row = _find_priority_row(mismatches, sql_key)
+            if row is None:
+                parts.append(f"  {env} — ✅ OK")
+            elif _exceeded(row):
+                parts.append(f"  {env} — 🚨 {_fmt_metrics(row, compact)}")
+            else:
+                parts.append(f"  {env} — ✅ OK | {_fmt_metrics(row, compact)}")
+        parts.append("")
+
+    parts.append("📋 *OTHER TABLES*")
+    for env, rows in other_by_env.items():
+        parts.append(f"*{env}*")
+        if not rows:
+            parts.append("  ✅ No other tables exceeded thresholds")
+        else:
+            for m in rows:
+                parts.append(f"🚨 `{m['table']}` | {_fmt_metrics(m, compact)}")
+        parts.append("")
+
+    return "\n".join(parts).rstrip() + "\n"
+
+
+def _format_combined_alert(env_results: dict, now: str) -> str | None:
+    any_exceeded = any(
+        _exceeded(m)
+        for mismatches in env_results.values()
+        for m in mismatches
+    )
+    if not any_exceeded:
         return None
 
-    extra = ""
-    if len(lines) > MAX_ALERT_ROWS:
-        extra = f"\n… and {len(lines) - MAX_ALERT_ROWS} more table(s)"
-        lines = lines[:MAX_ALERT_ROWS]
+    text = _build_alert_text(env_results, now, compact=False)
+    if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
+        return text
 
-    return (
-        f"📊 *SQL Server ↔ ClickHouse Lag Alert (V2)*\n"
-        f"🕒 Time: {now}\n"
-        f"*{env}*\n\n"
-        + "\n".join(lines)
-        + extra
+    logger.warning(
+        "Google Chat payload exceeds %d bytes; retrying with compact formatting.",
+        GOOGLE_CHAT_MAX_BYTES,
     )
+    text = _build_alert_text(env_results, now, compact=True)
+    if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
+        return text
+
+    trimmed = {env: list(rows) for env, rows in _other_exceeded_by_env(env_results).items()}
+    dropped = 0
+    while True:
+        text = _build_alert_text(env_results, now, compact=True, other_by_env=trimmed)
+        if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
+            break
+        dropped_one = False
+        for env in reversed(list(env_results.keys())):
+            if trimmed.get(env):
+                trimmed[env].pop()
+                dropped += 1
+                dropped_one = True
+                break
+        if not dropped_one:
+            break
+
+    if dropped:
+        logger.warning(
+            "Dropped %d lowest-lag other-table row(s) to fit Google Chat %d-byte limit.",
+            dropped,
+            GOOGLE_CHAT_MAX_BYTES,
+        )
+    return text
 
 
 def send_google_chat_alert(env_results: dict):
@@ -507,27 +623,20 @@ def send_google_chat_alert(env_results: dict):
         return
 
     now = datetime.now(PKT).strftime("%Y-%m-%d %I:%M:%S %p PKT")
-    sent = 0
-
-    for env, mismatches in env_results.items():
-        message_text = _format_env_alert(env, mismatches, now)
-        if not message_text:
-            logger.info("%s — no tables exceeded thresholds", env)
-            continue
-
-        logger.info("=" * 60)
-        logger.info("📤 GOOGLE CHAT — %s", env)
-        logger.info("=" * 60)
-        for line in message_text.splitlines():
-            logger.info(line)
-        logger.info("=" * 60)
-
-        requests.post(WEBHOOK_URL, json={"text": message_text}, timeout=30)
-        sent += 1
-        logger.info("✅ Google Chat alert sent for %s", env)
-
-    if sent == 0:
+    message_text = _format_combined_alert(env_results, now)
+    if not message_text:
         logger.info("All environments within thresholds. Google Chat alert skipped.")
+        return
+
+    logger.info("=" * 60)
+    logger.info("📤 GOOGLE CHAT MESSAGE PREVIEW:")
+    logger.info("=" * 60)
+    for line in message_text.splitlines():
+        logger.info(line)
+    logger.info("=" * 60)
+
+    requests.post(WEBHOOK_URL, json={"text": message_text}, timeout=30)
+    logger.info("✅ Google Chat alert sent (all environments, one message).")
 
 
 # ======================================================
