@@ -105,6 +105,62 @@ def log_table_progress(label: str, done: int, total: int) -> None:
     if done == 1 or done == total or done % PROGRESS_LOG_EVERY == 0:
         logger.info("%s — %d/%d tables (%d%%)", label, done, total, pct)
 
+
+# ======================================================
+# Fetch retries (HTTP / transport)
+# ======================================================
+CH_TIMEOUTS = (300, 600, 900)
+SQL_TIMEOUTS = (60, 120, 180)
+_RETRYABLE_ERROR_MARKERS = (
+    "unexpected http driver exception",
+    "timeout",
+    "timed out",
+    "connection reset",
+    "broken pipe",
+    "connection aborted",
+    "connection refused",
+    "communication link failure",
+    "server has gone away",
+    "hyt00",
+    "hyt01",
+    "08s01",
+)
+
+
+def _exc_text(exc: BaseException) -> str:
+    return str(exc).strip() or type(exc).__name__
+
+
+def _is_retryable_error(exc: BaseException) -> bool:
+    msg = str(exc).lower()
+    return any(marker in msg for marker in _RETRYABLE_ERROR_MARKERS)
+
+
+def _run_with_retries(kind: str, target: str, timeouts: tuple[int, ...], call):
+    """
+    call(timeout_seconds) -> result.
+    Retries retryable HTTP/transport errors with the next (longer) timeout.
+    """
+    last_exc: BaseException | None = None
+    for attempt, timeout in enumerate(timeouts, start=1):
+        try:
+            return call(timeout)
+        except Exception as exc:
+            last_exc = exc
+            if attempt < len(timeouts) and _is_retryable_error(exc):
+                logger.warning(
+                    "%s retry %d/%d for %s after %s (timeout=%ds)",
+                    kind,
+                    attempt + 1,
+                    len(timeouts),
+                    target,
+                    _exc_text(exc),
+                    timeouts[attempt],
+                )
+                continue
+            raise
+    raise last_exc  # pragma: no cover
+
 # ======================================================
 # Config
 # ======================================================
@@ -191,7 +247,7 @@ def ch_name_from_sql(database: str, schema: str, table: str) -> str | None:
 # ======================================================
 # ClickHouse Client
 # ======================================================
-def _make_ch_client(cfg: dict):
+def _make_ch_client(cfg: dict, timeout: int = CH_TIMEOUTS[0]):
     """
     Always create a FRESH clickhouse_connect client.
     Never share one client across threads — the library is not thread-safe.
@@ -204,21 +260,38 @@ def _make_ch_client(cfg: dict):
         database=cfg["database"],
         secure=True,   # hosts use HTTPS :443
         verify=False,
-        send_receive_timeout=300,
+        send_receive_timeout=timeout,
     )
+
+
+def _close_quietly(client) -> None:
+    try:
+        client.close()
+    except Exception:
+        pass
 
 
 class ClickHouseClient:
     def __init__(self, config):
         self.cfg = config.clickhouse
-        self._meta_client = _make_ch_client(self.cfg)
+
+    def _meta_query(self, sql: str, parameters: dict, target: str):
+        def _do(timeout: int):
+            client = _make_ch_client(self.cfg, timeout=timeout)
+            try:
+                return client.query(sql, parameters=parameters).result_rows
+            finally:
+                _close_quietly(client)
+
+        return _run_with_retries("CH metadata", target, CH_TIMEOUTS, _do)
 
     def _get_table_engines(self) -> dict[str, str]:
         """Returns {table_name_lower: engine_name}."""
-        rows = self._meta_client.query(
+        rows = self._meta_query(
             "SELECT name, engine FROM system.tables WHERE database = %(db)s",
-            parameters={"db": self.cfg["database"]},
-        ).result_rows
+            {"db": self.cfg["database"]},
+            "system.tables",
+        )
         return {name.lower(): engine for name, engine in rows}
 
     def _get_count_columns(self, table_names: list[str]) -> dict[str, str]:
@@ -229,15 +302,16 @@ class ClickHouseClient:
         if not table_names:
             return {}
 
-        rows = self._meta_client.query(
+        rows = self._meta_query(
             """
             SELECT table, name, position
             FROM system.columns
             WHERE database = %(db)s AND table IN %(tables)s
             ORDER BY table, position
             """,
-            parameters={"db": self.cfg["database"], "tables": tuple(table_names)},
-        ).result_rows
+            {"db": self.cfg["database"], "tables": tuple(table_names)},
+            "system.columns",
+        )
 
         by_table: dict[str, list[str]] = {}
         for table, col, _pos in rows:
@@ -251,41 +325,52 @@ class ClickHouseClient:
 
     def _count_one_table(
         self, name: str, column: str, use_final: bool
-    ) -> tuple[str, int]:
+    ) -> tuple[str, int | None, str | None]:
         """
         Count rows using a single column: count(col).
-        Each thread uses its own client.
+        Each attempt uses its own client and a longer timeout on retry.
+        Returns (name, count, error) — error is set instead of a fake 0.
         """
-        client = _make_ch_client(self.cfg)
         db = self.cfg["database"]
-        try:
-            if use_final:
-                query = (
-                    f"SELECT count(`{column}`) FROM {db}.`{name}` "
-                    f"FINAL WHERE __deleted='false'"
-                )
-            else:
-                query = (
-                    f"SELECT count(`{column}`) FROM {db}.`{name}` "
-                    f"WHERE __deleted='false'"
-                )
-            cnt = client.query(query).result_rows[0][0]
-        except Exception:
-            cnt = 0
-        finally:
+        if use_final:
+            query = (
+                f"SELECT count(`{column}`) FROM {db}.`{name}` "
+                f"FINAL WHERE __deleted='false'"
+            )
+        else:
+            query = (
+                f"SELECT count(`{column}`) FROM {db}.`{name}` "
+                f"WHERE __deleted='false'"
+            )
+
+        def _do(timeout: int) -> int:
+            client = _make_ch_client(self.cfg, timeout=timeout)
             try:
-                client.close()
-            except Exception:
-                pass
-        return name, int(cnt)
+                return int(client.query(query).result_rows[0][0])
+            finally:
+                _close_quietly(client)
+
+        try:
+            cnt = _run_with_retries("CH count", name, CH_TIMEOUTS, _do)
+            return name, cnt, None
+        except Exception as exc:
+            err = _exc_text(exc)
+            logger.error(
+                "CH count failed for %s after %d attempts: %s",
+                name,
+                len(CH_TIMEOUTS),
+                err,
+            )
+            return name, None, err
 
     def list_l2_tables(self) -> list[tuple[str, bool]]:
         """Return [(table_name, use_final), ...] for *_l2 / *_l2_vN tables only."""
         engines = self._get_table_engines()
-        rows = self._meta_client.query(
+        rows = self._meta_query(
             "SELECT name FROM system.tables WHERE database = %(db)s",
-            parameters={"db": self.cfg["database"]},
-        ).result_rows
+            {"db": self.cfg["database"]},
+            "system.tables",
+        )
 
         work = []
         for (name,) in rows:
@@ -297,35 +382,72 @@ class ClickHouseClient:
             work.append((name, use_final))
         return work
 
-    def fetch_tables(self, label: str | None = None) -> dict[str, int]:
-        work = self.list_l2_tables()
-        if not work:
-            return {}
-
+    def prepare_tables(
+        self, label: str | None = None
+    ) -> tuple[list[tuple[str, str, bool]], list[str], dict[str, str]]:
+        """
+        Metadata only: L2 list + count columns.
+        Returns (jobs, names, errors) where each job is (name, column, use_final).
+        """
         progress_label = label or f"CH [{self.cfg['host'].split('.')[0]}]"
+        try:
+            work = self.list_l2_tables()
+        except Exception as exc:
+            err = _exc_text(exc)
+            logger.error("CH metadata failed for %s: %s", progress_label, err)
+            return [], [], {"(metadata)": err}
+
         names = [name for name, _ in work]
-        count_cols = self._get_count_columns(names)
+        if not work:
+            return [], [], {}
+
+        try:
+            count_cols = self._get_count_columns(names)
+        except Exception as exc:
+            err = _exc_text(exc)
+            logger.error("CH metadata failed for %s: %s", progress_label, err)
+            return [], names, {"(metadata)": err}
+
+        jobs: list[tuple[str, str, bool]] = []
+        errors: dict[str, str] = {}
+        for name, use_final in work:
+            col = count_cols.get(name)
+            if not col:
+                errors[name] = "no countable column found"
+                logger.error("CH count failed for %s: no countable column found", name)
+                continue
+            jobs.append((name, col, use_final))
+        return jobs, names, errors
+
+    def count_prepared(
+        self,
+        jobs: list[tuple[str, str, bool]],
+        label: str | None = None,
+    ) -> tuple[dict[str, int], dict[str, str]]:
+        progress_label = label or f"CH [{self.cfg['host'].split('.')[0]}]"
+        if not jobs:
+            return {}, {}
 
         data: dict[str, int] = {}
+        errors: dict[str, str] = {}
         with ThreadPoolExecutor(max_workers=CH_TABLE_WORKERS) as pool:
-            futures = {}
-            for name, use_final in work:
-                col = count_cols.get(name)
-                if not col:
-                    data[name] = 0
-                    continue
-                futures[pool.submit(self._count_one_table, name, col, use_final)] = name
-
+            futures = {
+                pool.submit(self._count_one_table, name, col, use_final): name
+                for name, col, use_final in jobs
+            }
             done = 0
             total = len(futures)
             logger.info("%s — counting %d table(s)…", progress_label, total)
             for fut in as_completed(futures):
-                t_name, cnt = fut.result()
-                data[t_name] = cnt
+                t_name, cnt, err = fut.result()
+                if err:
+                    errors[t_name] = err
+                else:
+                    data[t_name] = cnt
                 done += 1
                 log_table_progress(progress_label, done, total)
 
-        return data
+        return data, errors
 
 # ======================================================
 # SQL Server Client (only tables present in ClickHouse)
@@ -334,24 +456,28 @@ class SQLServerClient:
     def __init__(self, config):
         self.cfg = config.mssql
 
-    def _connect(self, db: str):
-        return pyodbc.connect(
+    def _connect(self, db: str, timeout: int):
+        conn = pyodbc.connect(
             f"DRIVER={{{self.cfg['driver']}}};"
             f"SERVER={self.cfg['server']};DATABASE={db};"
             f"UID={self.cfg['username']};PWD={self.cfg['password']};"
             f"Encrypt=yes;TrustServerCertificate=yes;"
+            f"Connection Timeout={timeout};",
+            timeout=timeout,
         )
+        conn.timeout = timeout
+        return conn
 
     def _fetch_one_db(
         self, db: str, wanted: dict[tuple[str, str], list[str]]
-    ) -> dict[str, int]:
+    ) -> tuple[dict[str, int], str | None]:
         """
         Fetch row counts for specific (schema, table) pairs in one MSSQL database.
         wanted maps (schema, table) → list of ClickHouse table names to key the result.
-        Returns {CH_table_name: sql_count}.
+        Returns ({CH_table_name: sql_count}, error).
         """
         if not wanted:
-            return {}
+            return {}, None
 
         # Build parameterized IN list of (schema, table)
         pairs = sorted(wanted.keys())
@@ -373,25 +499,39 @@ class SQLServerClient:
         for schema, table in pairs:
             params.extend([schema, table])
 
-        conn = self._connect(db)
+        def _do(timeout: int) -> dict[str, int]:
+            conn = self._connect(db, timeout)
+            try:
+                df = pd.read_sql(query, conn, params=params)
+            finally:
+                conn.close()
+
+            out: dict[str, int] = {}
+            for _, r in df.iterrows():
+                key = (r["schema_name"], r["table_name"])
+                sql_count = int(r["row_count"])
+                for ch_name in wanted.get(key, []):
+                    out[ch_name] = sql_count
+            return out
+
         try:
-            df = pd.read_sql(query, conn, params=params)
-        finally:
-            conn.close()
+            return _run_with_retries("SQL fetch", db, SQL_TIMEOUTS, _do), None
+        except Exception as exc:
+            err = _exc_text(exc)
+            logger.error(
+                "SQL fetch failed for %s after %d attempts: %s",
+                db,
+                len(SQL_TIMEOUTS),
+                err,
+            )
+            return {}, err
 
-        out: dict[str, int] = {}
-        for _, r in df.iterrows():
-            key = (r["schema_name"], r["table_name"])
-            sql_count = int(r["row_count"])
-            for ch_name in wanted.get(key, []):
-                out[ch_name] = sql_count
-        return out
-
-    def fetch_for_ch_tables(self, ch_table_names: set[str]) -> dict[str, int]:
+    def fetch_for_ch_tables(
+        self, ch_table_names: set[str]
+    ) -> tuple[dict[str, int], dict[str, str]]:
         """
         Resolve CH names to SQL db/schema/table and fetch only those counts.
-        Returns {CH_table_name: sql_count} keyed by the original CH names
-        (so GG_dbo_CNTrack_l2_v1 keeps its versioned key).
+        Returns ({CH_table_name: sql_count}, {CH_table_name: error}).
         """
         by_db: dict[str, dict[tuple[str, str], list[str]]] = {}
         for ch_name in ch_table_names:
@@ -404,8 +544,9 @@ class SQLServerClient:
             by_db.setdefault(db, {}).setdefault((schema, table), []).append(ch_name)
 
         all_counts: dict[str, int] = {}
+        all_errors: dict[str, str] = {}
         if not by_db:
-            return all_counts
+            return all_counts, all_errors
 
         with ThreadPoolExecutor(max_workers=min(SQL_DB_WORKERS, len(by_db))) as pool:
             futures = {
@@ -414,14 +555,23 @@ class SQLServerClient:
             }
             for fut in as_completed(futures):
                 db = futures[fut]
+                wanted = by_db[db]
+                ch_names = [name for names in wanted.values() for name in names]
                 try:
-                    rows = fut.result()
+                    rows, err = fut.result()
+                except Exception as exc:
+                    err = _exc_text(exc)
+                    rows = {}
+                    logger.error(f"SQL fetch failed for {db}: {err}")
+                if err:
+                    for ch_name in ch_names:
+                        all_errors[ch_name] = err
+                        logger.error("SQL fetch failed for %s: %s", ch_name, err)
+                else:
                     all_counts.update(rows)
                     logger.info(f"SQL fetched: {db} → {len(rows)} matched tables")
-                except Exception as exc:
-                    logger.error(f"SQL fetch failed for {db}: {exc}")
 
-        return all_counts
+        return all_counts, all_errors
 
 # ======================================================
 # Comparator
@@ -529,11 +679,18 @@ def _fmt_metrics(m: dict, compact: bool) -> str:
     )
 
 
+def _has_fetch_errors(fetch_errors: dict[str, dict[str, str]] | None) -> bool:
+    if not fetch_errors:
+        return False
+    return any(table_errors for table_errors in fetch_errors.values())
+
+
 def _build_alert_text(
     env_results: dict,
     now: str,
     compact: bool,
     other_by_env: dict[str, list[dict]] | None = None,
+    fetch_errors: dict[str, dict[str, str]] | None = None,
 ) -> str:
     if other_by_env is None:
         other_by_env = _other_exceeded_by_env(env_results)
@@ -542,45 +699,62 @@ def _build_alert_text(
         "📊 *SQL Server ↔ ClickHouse Lag Alert (V2)*",
         f"🕒 Time: {now}",
         "",
-        "⭐ *PRIORITY TABLES*",
     ]
 
+    if _has_fetch_errors(fetch_errors):
+        parts.append("*FETCH ERRORS*")
+        for env, table_errors in fetch_errors.items():
+            if not table_errors:
+                continue
+            parts.append(f"*{env}*")
+            for table, err in sorted(table_errors.items()):
+                parts.append(f"  `{table}` — {err}")
+            parts.append("")
+
+    priority_blocks: list[list[str]] = []
     for db, schema, table in PRIORITY_SQL_TABLES:
         sql_key = (db.lower(), schema.lower(), table.lower())
-        parts.append(f"*⭐ {db}.{schema}.{table}*")
+        env_lines = []
         for env, mismatches in env_results.items():
             row = _find_priority_row(mismatches, sql_key)
-            if row is None:
-                parts.append(f"  {env} — ✅ OK")
-            elif _exceeded(row):
-                parts.append(f"  {env} — 🚨 {_fmt_metrics(row, compact)}")
-            else:
-                parts.append(f"  {env} — ✅ OK | {_fmt_metrics(row, compact)}")
-        parts.append("")
+            if row is not None and _exceeded(row):
+                env_lines.append(f"  {env} — 🚨 {_fmt_metrics(row, compact)}")
+        if env_lines:
+            priority_blocks.append([f"*⭐ {db}.{schema}.{table}*", *env_lines, ""])
 
-    parts.append("📋 *OTHER TABLES*")
-    for env, rows in other_by_env.items():
-        parts.append(f"*{env}*")
-        if not rows:
-            parts.append("  ✅ No other tables exceeded thresholds")
-        else:
+    if priority_blocks:
+        parts.append("⭐ *PRIORITY TABLES*")
+        for block in priority_blocks:
+            parts.extend(block)
+
+    exceeded_other = {env: rows for env, rows in other_by_env.items() if rows}
+    if exceeded_other:
+        parts.append("📋 *OTHER TABLES*")
+        for env, rows in exceeded_other.items():
+            parts.append(f"*{env}*")
             for m in rows:
                 parts.append(f"🚨 `{m['table']}` | {_fmt_metrics(m, compact)}")
-        parts.append("")
+            parts.append("")
 
     return "\n".join(parts).rstrip() + "\n"
 
 
-def _format_combined_alert(env_results: dict, now: str) -> str | None:
+def _format_combined_alert(
+    env_results: dict,
+    now: str,
+    fetch_errors: dict[str, dict[str, str]] | None = None,
+) -> str | None:
     any_exceeded = any(
         _exceeded(m)
         for mismatches in env_results.values()
         for m in mismatches
     )
-    if not any_exceeded:
+    if not any_exceeded and not _has_fetch_errors(fetch_errors):
         return None
 
-    text = _build_alert_text(env_results, now, compact=False)
+    text = _build_alert_text(
+        env_results, now, compact=False, fetch_errors=fetch_errors
+    )
     if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
         return text
 
@@ -588,14 +762,22 @@ def _format_combined_alert(env_results: dict, now: str) -> str | None:
         "Google Chat payload exceeds %d bytes; retrying with compact formatting.",
         GOOGLE_CHAT_MAX_BYTES,
     )
-    text = _build_alert_text(env_results, now, compact=True)
+    text = _build_alert_text(
+        env_results, now, compact=True, fetch_errors=fetch_errors
+    )
     if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
         return text
 
     trimmed = {env: list(rows) for env, rows in _other_exceeded_by_env(env_results).items()}
     dropped = 0
     while True:
-        text = _build_alert_text(env_results, now, compact=True, other_by_env=trimmed)
+        text = _build_alert_text(
+            env_results,
+            now,
+            compact=True,
+            other_by_env=trimmed,
+            fetch_errors=fetch_errors,
+        )
         if len(text.encode("utf-8")) <= GOOGLE_CHAT_MAX_BYTES:
             break
         dropped_one = False
@@ -617,13 +799,16 @@ def _format_combined_alert(env_results: dict, now: str) -> str | None:
     return text
 
 
-def send_google_chat_alert(env_results: dict):
+def send_google_chat_alert(
+    env_results: dict,
+    fetch_errors: dict[str, dict[str, str]] | None = None,
+):
     if not WEBHOOK_URL:
         logger.warning("⚠️  GOOGLE_CHAT_WEBHOOK_V2_URL is empty — alert NOT sent.")
         return
 
     now = datetime.now(PKT).strftime("%Y-%m-%d %I:%M:%S %p PKT")
-    message_text = _format_combined_alert(env_results, now)
+    message_text = _format_combined_alert(env_results, now, fetch_errors)
     if not message_text:
         logger.info("All environments within thresholds. Google Chat alert skipped.")
         return
@@ -640,17 +825,42 @@ def send_google_chat_alert(env_results: dict):
 
 
 # ======================================================
-# Per-environment CH worker
+# Per-environment / SQL workers
 # ======================================================
-def _fetch_ch_env(
+def _prepare_ch_env(
     env_name: str,
     env_cfg: dict,
-) -> tuple[str, dict[str, int]]:
-    logger.info(f"▶ Starting CH fetch: {env_name}")
+) -> tuple[str, ClickHouseClient, list[tuple[str, str, bool]], list[str], dict[str, str]]:
+    logger.info(f"▶ Listing CH tables: {env_name}")
     config = Config(env_cfg["host"], env_cfg["port"])
-    ch_tables = ClickHouseClient(config).fetch_tables(label=env_name)
-    logger.info(f"✔ CH done: {env_name} — {len(ch_tables)} table(s)")
-    return env_name, ch_tables
+    client = ClickHouseClient(config)
+    jobs, names, errors = client.prepare_tables(label=env_name)
+    logger.info(
+        f"✔ CH listed: {env_name} — {len(names)} table(s), {len(jobs)} count job(s)"
+    )
+    return env_name, client, jobs, names, errors
+
+
+def _count_ch_env(
+    env_name: str,
+    client: ClickHouseClient,
+    jobs: list[tuple[str, str, bool]],
+) -> tuple[str, dict[str, int], dict[str, str]]:
+    logger.info(f"▶ Counting CH tables: {env_name}")
+    counts, errors = client.count_prepared(jobs, label=env_name)
+    logger.info(
+        f"✔ CH counted: {env_name} — {len(counts)} table(s), {len(errors)} error(s)"
+    )
+    return env_name, counts, errors
+
+
+def _fetch_sql(ch_union: set[str]) -> tuple[dict[str, int], dict[str, str]]:
+    logger.info("▶ Starting SQL fetch (overlaps CH counts)…")
+    _any_env = next(iter(CLICKHOUSE_ENVIRONMENTS.values()))
+    sql_config = Config(_any_env["host"], _any_env["port"])
+    counts, errors = SQLServerClient(sql_config).fetch_for_ch_tables(ch_union)
+    logger.info(f"✔ SQL fetch complete — {len(counts)} matched table(s)")
+    return counts, errors
 
 
 # ======================================================
@@ -667,42 +877,70 @@ class App:
             )
         )
 
-        # ── STEP 1: ClickHouse first (all envs in parallel) ─────────────────
+        # ── STEP 1: List L2 tables on all 3 envs (parallel, metadata only) ──
         logger.info("━" * 60)
-        logger.info("STEP 1 — Fetching ClickHouse *_l2 / *_l2_vN tables (3 envs simultaneously)…")
+        logger.info("STEP 1 — Listing ClickHouse *_l2 / *_l2_vN tables (3 envs simultaneously)…")
         logger.info("━" * 60)
 
-        env_ch: dict[str, dict[str, int]] = {}
+        env_ch: dict[str, dict[str, int]] = {name: {} for name in CLICKHOUSE_ENVIRONMENTS}
+        fetch_errors: dict[str, dict[str, str]] = {}
+        prepared: dict[str, tuple[ClickHouseClient, list[tuple[str, str, bool]]]] = {}
+        ch_union: set[str] = set()
 
         with ThreadPoolExecutor(max_workers=CH_ENV_WORKERS) as pool:
             futures = {
-                pool.submit(_fetch_ch_env, env_name, env_cfg): env_name
+                pool.submit(_prepare_ch_env, env_name, env_cfg): env_name
                 for env_name, env_cfg in CLICKHOUSE_ENVIRONMENTS.items()
             }
             for fut in as_completed(futures):
                 env_name = futures[fut]
                 try:
-                    name, ch_tables = fut.result()
-                    env_ch[name] = ch_tables
+                    name, client, jobs, names, errors = fut.result()
+                    ch_union.update(names)
+                    if errors:
+                        fetch_errors.setdefault(name, {}).update(errors)
+                    if jobs:
+                        prepared[name] = (client, jobs)
                 except Exception as exc:
-                    logger.error(f"Environment failed [{env_name}]: {exc}")
-                    env_ch[env_name] = {}
-
-        ch_union = set()
-        for tables in env_ch.values():
-            ch_union.update(tables.keys())
+                    err = _exc_text(exc)
+                    logger.error(f"Environment list failed [{env_name}]: {err}")
+                    fetch_errors[env_name] = {"(environment)": err}
 
         logger.info(f"ClickHouse union — {len(ch_union)} unique L2 table(s).")
 
-        # ── STEP 2: SQL only for tables found in ClickHouse ─────────────────
+        # ── STEP 2: Count all 3 envs + SQL fetch at the same time ───────────
         logger.info("━" * 60)
-        logger.info("STEP 2 — Fetching SQL Server counts for ClickHouse tables only…")
+        logger.info("STEP 2 — Counting ClickHouse tables and fetching SQL (in parallel)…")
         logger.info("━" * 60)
 
-        _any_env = next(iter(CLICKHOUSE_ENVIRONMENTS.values()))
-        sql_config = Config(_any_env["host"], _any_env["port"])
-        sql_counts = SQLServerClient(sql_config).fetch_for_ch_tables(ch_union)
-        logger.info(f"SQL fetch complete — {len(sql_counts)} matched table(s).")
+        sql_counts: dict[str, int] = {}
+        with ThreadPoolExecutor(max_workers=CH_ENV_WORKERS + 1) as pool:
+            futures = {
+                pool.submit(_count_ch_env, env_name, client, jobs): ("ch", env_name)
+                for env_name, (client, jobs) in prepared.items()
+            }
+            futures[pool.submit(_fetch_sql, ch_union)] = ("sql", None)
+
+            for fut in as_completed(futures):
+                kind, env_name = futures[fut]
+                try:
+                    if kind == "ch":
+                        name, counts, errors = fut.result()
+                        env_ch[name] = counts
+                        if errors:
+                            fetch_errors.setdefault(name, {}).update(errors)
+                    else:
+                        sql_counts, sql_errors = fut.result()
+                        if sql_errors:
+                            fetch_errors["SQL Server"] = sql_errors
+                except Exception as exc:
+                    err = _exc_text(exc)
+                    if kind == "ch":
+                        logger.error(f"Environment count failed [{env_name}]: {err}")
+                        fetch_errors.setdefault(env_name, {})["(environment)"] = err
+                    else:
+                        logger.error(f"SQL fetch failed: {err}")
+                        fetch_errors["SQL Server"] = {"(sql)": err}
 
         # ── STEP 3: Compare + write CSVs ─────────────────────────────────────
         logger.info("━" * 60)
@@ -726,7 +964,7 @@ class App:
             for k in CLICKHOUSE_ENVIRONMENTS
             if k in env_results
         }
-        send_google_chat_alert(ordered_results)
+        send_google_chat_alert(ordered_results, fetch_errors)
 
         logger.info("🎯 COMPARISON COMPLETED")
 
