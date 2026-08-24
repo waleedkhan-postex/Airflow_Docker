@@ -1,0 +1,29 @@
+name: Auto merge development into master
+
+on:
+  push:
+    branches: [development]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-merge-to-master
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge development into master
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout master
+          git pull origin master
+          git merge origin/development --no-ff -m "Auto-merge development into master"
+          git push origin master
